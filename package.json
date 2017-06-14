@@ -1,0 +1,33 @@
+{
+  "name": "aotoo-smock",
+  "version": "1.0.0",
+  "description": "基于webpack2的简单的mock服务",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "webkixi",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.5.2",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-react-transform": "^2.0.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-react-display-name": "^6.8.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-preset-stage-1": "^6.16.0",
+    "babel-preset-stage-3": "^6.5.0",
+    "babel-register": "^6.9.0",
+    "react-hot-loader": "^1.3.1",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^1.16.3"
+  },
+  "dependencies": {
+    "aotoo": "^1.0.26",
+    "ejs": "^2.5.6"
+  }
+}

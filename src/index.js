@@ -19,6 +19,10 @@ inject.css(
       width: 300px;
       height: 120px;
     }
+    .img{
+      font-size: 2em;
+      font-weight: bold;
+    }
   `
 )
 
@@ -30,6 +34,14 @@ const treeTest = treex({
       {title: '1111'},
       {title: '2222'},
       {title: '1111'},
+      {title: '2222'},
+      {title: '1111'},
+      {title: '2222'},
+      {title: '1111'},
+      {title: '2222'},
+      {title: '1111'},
+      {title: '2222'},
+      {title: <div className="img">abcdefg</div>},
       {title: '2222'},
       {title: '1111'},
       {title: '2222'},
@@ -47,10 +59,19 @@ const btns = Aotoo.list({
   ]
 })
 
+const LazyList = Aotoo.lazy(treeTest.render(), {
+  container: window,
+  elems: '.img',
+  ondataload: function(dom) {
+    console.log(dom);
+  }
+})
+
 
 const Box = Aotoo.wrap(
   <div>
-    {treeTest.render()}
+    {/*{treeTest.render()}*/}
+    <LazyList />
     {btns}
   </div>
   , function(dom){

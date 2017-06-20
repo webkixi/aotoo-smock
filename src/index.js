@@ -2,7 +2,6 @@ import at from './aotoo'
 import treex from 'aotoo-react-treex'
 import style from './index.styl'
 
-
 const inject = require('aotoo-inject')()
 
 inject.css([
@@ -12,11 +11,26 @@ inject.css([
   inject.js('/hello.js', function(){
     console.log('========= 3333eeee');
   })
-})
+});
+
+inject.css(
+  `
+    .item{
+      width: 300px;
+      height: 120px;
+    }
+  `
+)
 
 const treeTest = treex({
   props: { 
     data: [
+      {title: '1111'},
+      {title: '2222'},
+      {title: '1111'},
+      {title: '2222'},
+      {title: '1111'},
+      {title: '2222'},
       {title: '1111'},
       {title: '2222'},
       {title: '3333'} 

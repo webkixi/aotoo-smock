@@ -1,4 +1,4 @@
 import aotoo from 'aotoo'
 window.Aotoo = aotoo
-require('./lazy')
+require('./scroll_mixins')
 export default aotoo

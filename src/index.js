@@ -59,10 +59,13 @@ const btns = Aotoo.list({
   ]
 })
 
-const LazyList = Aotoo.lazy(treeTest.render(), {
+const LazyList = Aotoo.scroll(treeTest.render(), {
   container: window,
-  elems: '.img',
-  ondataload: function(dom) {
+  elements: '.img',
+  onscroll: function(cur){
+    console.log(cur.toBottom);
+  },
+  oninview: function(dom) {
     console.log(dom);
   }
 })
@@ -75,30 +78,30 @@ const Box = Aotoo.wrap(
     {btns}
   </div>
   , function(dom){
-    $('#update').click(function(){
-      treeTest.$update({
-        data: [
-          {title: 'aaaaaa'},
-          {title: 'bbbbbb'},
-          {title: 'cccccc'}
-        ]
-      })
-    })
-    $('#append').click(function(){
-      treeTest.$append({
-        data: {title: '1111'}
-      })
-    })
-    $('#prepend').click(function(){
-      treeTest.$prepend({
-        data: {title: '1111'}
-      })
-    })
-    $('#delete').click(function(){
-      treeTest.$delete({
-        query: {title: '1111'}
-      })
-    })
+    // $('#update').click(function(){
+    //   treeTest.$update({
+    //     data: [
+    //       {title: 'aaaaaa'},
+    //       {title: 'bbbbbb'},
+    //       {title: 'cccccc'}
+    //     ]
+    //   })
+    // })
+    // $('#append').click(function(){
+    //   treeTest.$append({
+    //     data: {title: '1111'}
+    //   })
+    // })
+    // $('#prepend').click(function(){
+    //   treeTest.$prepend({
+    //     data: {title: '1111'}
+    //   })
+    // })
+    // $('#delete').click(function(){
+    //   treeTest.$delete({
+    //     query: {title: '1111'}
+    //   })
+    // })
   }
 )
 

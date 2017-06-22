@@ -160,6 +160,49 @@ try {
       return ret;
     })( navigator.userAgent )
 
+    function lazy(container, elements) {
+      if (elements.length) {
+        elements.map(function(elem, ii){
+          var r=elem.getBoundingClientRect();/*元素到窗口左上角距离*/
+          // return {top:r.top,left:r.left,bottom:r.bottom,right:r.right}
+        })
+      }
+    }
+
+    function getRange(c){
+      return isWindow(c)&&window.innerWidth?function(){
+        return {top:0,left:0,right:window.innerWidth,bottom:window.innerHeight}
+      }:function(){
+        return getRect(c);
+      }
+    }
+
+    function getRect(elem){
+      var r=elem.getBoundingClientRect();/*元素到窗口左上角距离*/
+      return {top:r.top,left:r.left,bottom:r.bottom,right:r.right}
+    },
+
+    function inRange(dom, elements){
+      var range = getRange(dom)()
+      var side = {
+        v : rect.top<=range.bottom ? rect.bottom>=range.top ? "in" : "" : "bottom",/*垂直位置*/
+        h : rect.left<=range.right ? rect.right>=range.left ? "in" : "" : "right" /*水平位置*/
+      };
+      return side;
+    }
+
+    function isPassive() {
+      var supportsPassiveOption = false;
+      try {
+        addEventListener("test", null, Object.defineProperty({}, 'passive', {
+          get: function () {
+            supportsPassiveOption = true;
+          }
+        }));
+      } catch(e) {}
+      return supportsPassiveOption;
+    }
+
     function preventDefault(pred){
       document.addEventListener('touchmove', function (e) {
         pred ? e.preventDefault() : ''
@@ -193,8 +236,6 @@ try {
 
 
     var scrollState = { ttt: '' }
-
-
     function bindScrollAction(dom, opts){
 
       var onscroll = opts.onscroll
@@ -209,25 +250,23 @@ try {
       const iscr = new isc(dom, opts)
       iscr.refresh()
 
-      if (typeof onscroll == 'function' || typeof onpulldown == 'function') {
+      if (typeof onscroll == 'function' || 
+        typeof onpulldown == 'function') {
         iscr.on('scroll', ()=>{
           // distY
-          clearTimeout(scrollState.ttt)
           const diff = getDiff(iscr, opts)
           onscroll ? onscroll.apply(iscr, diff) : ''
           onpulldown ? onpulldown.apply(iscr, diff) : ''
         })
       }
+
       iscr.on('scrollEnd', ()=>{
         const diff = getDiff(iscr, opts)
-        scrollState.ttt = setTimeout(()=>{
-          lazyLoad(this.layzblocks, dom)
-        }, 1200)
         if (typeof onscrollend == 'function') {
           onscrollend.apply(iscr, diff)
           setTimeout(()=>{
             iscr.refresh()
-          },300)
+          },200)
         }
       })
 
@@ -259,20 +298,14 @@ try {
     var _container = $id(_opts.container) || container;
     var def = {
       container: _container,
-      elements: '',
-      mode: 'v',
-      onscroll: _opts.ondataload,
-      oninview: noop(_opts.oninview),
-      onfinish: noop(_opts.onfinish)
+      onscroll: _opts.onscroll,
+      onpulldown: _opts.onpulldown,
+      onscrollend: _opts.onpulldown,
+      preventDefault: false,
+      direction: 'Y'
     };
     var _options = utile.merge(def, _opts || {});
-
-    if (typeof _options.elements == 'string') {
-      _options.elems = getSiblingElements(_container, _options.elements) || _container.getElementsByTagName('img')
-    }
-    _options.ondataload = _options.oninview
-    _options.ondataend = _options.onfinish
-    new LazyloadClass(_options);
+    return bindScrollAction(_options);
   })
 
   module.exports = {}

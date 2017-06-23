@@ -160,37 +160,6 @@ try {
       return ret;
     })( navigator.userAgent )
 
-    function lazy(container, elements) {
-      if (elements.length) {
-        elements.map(function(elem, ii){
-          var r=elem.getBoundingClientRect();/*元素到窗口左上角距离*/
-          // return {top:r.top,left:r.left,bottom:r.bottom,right:r.right}
-        })
-      }
-    }
-
-    function getRange(c){
-      return isWindow(c)&&window.innerWidth?function(){
-        return {top:0,left:0,right:window.innerWidth,bottom:window.innerHeight}
-      }:function(){
-        return getRect(c);
-      }
-    }
-
-    function getRect(elem){
-      var r=elem.getBoundingClientRect();/*元素到窗口左上角距离*/
-      return {top:r.top,left:r.left,bottom:r.bottom,right:r.right}
-    },
-
-    function inRange(dom, elements){
-      var range = getRange(dom)()
-      var side = {
-        v : rect.top<=range.bottom ? rect.bottom>=range.top ? "in" : "" : "bottom",/*垂直位置*/
-        h : rect.left<=range.right ? rect.right>=range.left ? "in" : "" : "right" /*水平位置*/
-      };
-      return side;
-    }
-
     function isPassive() {
       var supportsPassiveOption = false;
       try {
@@ -234,10 +203,116 @@ try {
       }
     }
 
+    function getBlocks(container, opts){
+      if (opts.select){
+        return getSiblingElements(container, opts.select)
+      }
+    }
+
+    function getRange(c){
+      return isWindow(c)&&window.innerWidth?function(){
+        return {top:0,left:0,right:window.innerWidth,bottom:window.innerHeight}
+      }:function(){
+        return getRect(c);
+      }
+    }
+
+    function getRect(elem){
+      var r=elem.getBoundingClientRect();/*元素到窗口左上角距离*/
+      return {top:r.top,left:r.left,bottom:r.bottom,right:r.right}
+    }
+
+    function isRange(side, mode){
+      /*1：加载 -1：跳出循环 0：不加载执行下一个*/
+      return {
+        v:side.v ? side.v=="in"?1:-1 : 0,
+        h:side.h ? side.h=="in"?1:-1 : 0,
+        c:side.v&&side.h ? side.v=="in"&&side.h=="in"? 1:side.v!="in"?-1:0 : 0
+      }[mode||"c"]
+    }
+
+    function inRange(range, rect){
+      return {
+        v : rect.top<=range.bottom ? rect.bottom>=range.top ? "in" : "" : "bottom",/*垂直位置*/
+        h : rect.left<=range.right ? rect.right>=range.left ? "in" : "" : "right" /*水平位置*/
+      }
+    }
+
+    var $iscroll = require('iscroll/build/iscroll-probe')
+    function _iscroll(dom, opts){
+      preventDefault(opts.preventDefault)
+
+      this.blocks = getBlocks(dom, opts)
+      this.container = dom
+      this.opts = opts||{}
+      this.timer = ''
+
+      this.onscroll = opts.onscroll
+      this.onscrollend = opts.onscrollend
+      this.onpulldown = opts.onpulldown
+
+      this.iscr = new $iscroll(dom, opts)
+      this.run()
+    }
+
+    _iscroll.prototype = {
+      isFunction(fun){
+        return typeof fun == 'function'
+      },
+
+      lazyLoad: function() {
+        var blocks = this.blocks;
+        var range = getRange(this.container)()
+        if (blocks.length) {
+          
+          blocks.map(function(elem, ii){
+            var rect = getRect(elem)
+            var side = isRange(inRange(range, rect))
+            if(side&&side!=0){
+              if(side==1&&!this.elock){
+                this._onDataLoad(elems[i]);
+                blocks.splice(i--,1);/*加载完之后将该对象从队列中删除*/
+              }
+            }
+          })
+        }
+      },
+      run: function(){
+        var opts = this.opts
+        var blocks = this.blocks
+        var iscr = this.iscr
+        var onscroll = this.onscroll
+        var onpulldown = this.onpulldown
+        var onscrollend = this.onscrollend
+        var that = this
+        iscr.refresh()
+
+        if (isFunction(onscroll) || isFunction(onpulldown) ) {
+          iscr.on('scroll', function(){
+            clearTimeout(that.timer)
+            var diff = getDiff(iscr, opts)
+            onscroll ? onscroll.apply(iscr, diff) : ''
+            onpulldown ? onpulldown.apply(iscr, diff) : ''
+          })
+        }
+
+        iscr.on('scrollEnd', function(){
+          var diff = getDiff(iscr, opts)
+          that.timer = setTimeout(function(){
+            lazyLoad(dom, that.blocks, opts)
+          }, 1200)
+
+          if (isFunction(onscrollend)) {
+            onscrollend.apply(iscr, diff)
+            setTimeout(function(){ iscr.refresh() },200)
+          }
+        })
+      }
+    }
 
     var scrollState = { ttt: '' }
     function bindScrollAction(dom, opts){
-
+      getBlocks(dom, opts)
       var onscroll = opts.onscroll
       var onscrollend = opts.onscrollend
       var onpulldown = opts.onpulldown
@@ -262,6 +337,10 @@ try {
 
       iscr.on('scrollEnd', ()=>{
         const diff = getDiff(iscr, opts)
+        scrollState.ttt = setTimeout(()=>{
+          lazyLoad(dom, blocks, opts)
+        }, 1200)
+
         if (typeof onscrollend == 'function') {
           onscrollend.apply(iscr, diff)
           setTimeout(()=>{

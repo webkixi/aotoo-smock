@@ -98,6 +98,9 @@ try {
       if (typeof select == 'string') {
         temp = select.split(' ')
       }
+      if (utile.isArray(select)) {
+        temp = select
+      }
       temp.forEach( function(item){
         var char0 = item.charAt(0)
         if (char0 == '#') {
@@ -151,6 +154,10 @@ try {
       }	
     }
 
+    function isFunction(fun){
+      return typeof fun == 'function'
+    }
+
 
     var os = (function( ua ) {
       let ret = {},
@@ -183,29 +190,36 @@ try {
 
     var oriPositionY = 0
     var oriPositionX = 0
-    function getDiff(iscrl, opts){
+    function getScrollDirection(iscrl, opts){
       var direction
       if (!opts.direction) opts.direction = 'Y'
 
       if (opts.direction == 'Y') {
         direction = iscrl.y < oriPositionY ? 'down' : 'up'
         oriPositionY = iscrl.y
-        return [iscrl.y, direction];
+        return direction
+        // return [iscrl.y, direction];
       }
 
       if (opts.direction == 'X') {
         direction = iscrl.x < oriPositionX ? 'left' : 'right'
         oriPositionX = iscrl.x
-        return [iscrl.x, direction]
+        return direction
+        // return [iscrl.x, direction]
       }
       else {
-        return [iscrl.x, iscrl.y]
+        var _directionY = iscrl.y < oriPositionY ? 'down' : 'up'
+        var _directionX = iscrl.x < oriPositionX ? 'left' : 'right'
+        oriPositionY = iscrl.y
+        oriPositionX = iscrl.x
+        return _directionX + ' ' + _directionY
+        // return [iscrl.x, iscrl.y]
       }
     }
 
-    function getBlocks(container, opts){
-      if (opts.select){
-        return getSiblingElements(container, opts.select)
+    function getBlocks(container, elems){
+      if (elems){
+        return getSiblingElements(container, elems)
       }
     }
 
@@ -239,10 +253,9 @@ try {
     }
 
     var $iscroll = require('iscroll/build/iscroll-probe')
-    function _iscroll(dom, opts){
+    function Iscroll(dom, opts){
       preventDefault(opts.preventDefault)
-
-      this.blocks = getBlocks(dom, opts)
+      this.blocks = getBlocks(dom, opts.elements)
       this.container = dom
       this.opts = opts||{}
       this.timer = ''
@@ -255,28 +268,32 @@ try {
       this.run()
     }
 
-    _iscroll.prototype = {
-      isFunction(fun){
-        return typeof fun == 'function'
-      },
+    Iscroll.prototype = {
 
-      lazyLoad: function() {
+      lazyLoad: function(blks, cb) {
+        var that = this
+        if (isFunction(blks)) {
+          cb = blks
+          blks = undefined
+        }
+        this.blocks = blks || this.blocks;
         var blocks = this.blocks;
         var range = getRange(this.container)()
-        if (blocks.length) {
-          
+        if (blocks && blocks.length) {
           blocks.map(function(elem, ii){
             var rect = getRect(elem)
             var side = isRange(inRange(range, rect))
             if(side&&side!=0){
-              if(side==1&&!this.elock){
-                this._onDataLoad(elems[i]);
-                blocks.splice(i--,1);/*加载完之后将该对象从队列中删除*/
+              // if(side==1&&!this.elock){
+              if(side==1){
+                if (isFunction(cb)) cb.call(that, elem)
+                blocks.splice(ii--,1); /*加载完之后将该对象从队列中删除*/
               }
             }
           })
         }
       },
+
       run: function(){
         var opts = this.opts
         var blocks = this.blocks
@@ -285,72 +302,74 @@ try {
         var onpulldown = this.onpulldown
         var onscrollend = this.onscrollend
         var that = this
+        var lazy = function(blks, cb){
+          clearTimeout(that.timer)
+          that.timer = setTimeout(function() {
+            that.lazyLoad(blck, cb)
+            iscr.refresh()
+          }, 1200);
+        }
         iscr.refresh()
 
         if (isFunction(onscroll) || isFunction(onpulldown) ) {
           iscr.on('scroll', function(){
-            clearTimeout(that.timer)
-            var diff = getDiff(iscr, opts)
-            onscroll ? onscroll.apply(iscr, diff) : ''
-            onpulldown ? onpulldown.apply(iscr, diff) : ''
+            var direction = getScrollDirection(iscr, opts)
+            onscroll ? onscroll.call(iscr, direction, lazy) : ''
+            onpulldown ? onpulldown.call(iscr, direction, lazy) : ''
           })
         }
 
         iscr.on('scrollEnd', function(){
-          var diff = getDiff(iscr, opts)
-          that.timer = setTimeout(function(){
-            lazyLoad(dom, that.blocks, opts)
-          }, 1200)
-
+          var direction = getScrollDirection(iscr, opts)
           if (isFunction(onscrollend)) {
-            onscrollend.apply(iscr, diff)
+            onscrollend.call(iscr, direction, lazy)
             setTimeout(function(){ iscr.refresh() },200)
           }
         })
       }
     }
 
-    var scrollState = { ttt: '' }
-    function bindScrollAction(dom, opts){
-      getBlocks(dom, opts)
-      var onscroll = opts.onscroll
-      var onscrollend = opts.onscrollend
-      var onpulldown = opts.onpulldown
+    // var scrollState = { ttt: '' }
+    // function bindScrollAction(dom, opts){
+    //   getBlocks(dom, opts)
+    //   var onscroll = opts.onscroll
+    //   var onscrollend = opts.onscrollend
+    //   var onpulldown = opts.onpulldown
 
-      opts.disableTouch = os.mobile ? false : true
-      opts.disablePointer = os.mobile ? true : false
+    //   opts.disableTouch = os.mobile ? false : true
+    //   opts.disablePointer = os.mobile ? true : false
       
-      preventDefault(opts.preventDefault)
+    //   preventDefault(opts.preventDefault)
 
-      const iscr = new isc(dom, opts)
-      iscr.refresh()
+    //   const iscr = new isc(dom, opts)
+    //   iscr.refresh()
 
-      if (typeof onscroll == 'function' || 
-        typeof onpulldown == 'function') {
-        iscr.on('scroll', ()=>{
-          // distY
-          const diff = getDiff(iscr, opts)
-          onscroll ? onscroll.apply(iscr, diff) : ''
-          onpulldown ? onpulldown.apply(iscr, diff) : ''
-        })
-      }
+    //   if (typeof onscroll == 'function' || 
+    //     typeof onpulldown == 'function') {
+    //     iscr.on('scroll', ()=>{
+    //       // distY
+    //       const diff = getDiff(iscr, opts)
+    //       onscroll ? onscroll.apply(iscr, diff) : ''
+    //       onpulldown ? onpulldown.apply(iscr, diff) : ''
+    //     })
+    //   }
 
-      iscr.on('scrollEnd', ()=>{
-        const diff = getDiff(iscr, opts)
-        scrollState.ttt = setTimeout(()=>{
-          lazyLoad(dom, blocks, opts)
-        }, 1200)
+    //   iscr.on('scrollEnd', ()=>{
+    //     const diff = getDiff(iscr, opts)
+    //     scrollState.ttt = setTimeout(()=>{
+    //       lazyLoad(dom, blocks, opts)
+    //     }, 1200)
 
-        if (typeof onscrollend == 'function') {
-          onscrollend.apply(iscr, diff)
-          setTimeout(()=>{
-            iscr.refresh()
-          },200)
-        }
-      })
+    //     if (typeof onscrollend == 'function') {
+    //       onscrollend.apply(iscr, diff)
+    //       setTimeout(()=>{
+    //         iscr.refresh()
+    //       },200)
+    //     }
+    //   })
 
-      return iscr
-    }
+    //   return iscr
+    // }
 
 
     /*
@@ -365,26 +384,19 @@ try {
     *   }
     * })
     */
-    function noop(cb) {
-      return function (elem) {
-        if (typeof cb == 'function') {
-          cb.call(this, elem);
-        }
-        this.elock = false;
-      };
-    }
-
     var _container = $id(_opts.container) || container;
     var def = {
       container: _container,
+      elements: '',
+      preventDefault: false,
+      direction: 'Y',
       onscroll: _opts.onscroll,
       onpulldown: _opts.onpulldown,
-      onscrollend: _opts.onpulldown,
-      preventDefault: false,
-      direction: 'Y'
+      onscrollend: _opts.onscrollend
     };
     var _options = utile.merge(def, _opts || {});
-    return bindScrollAction(_options);
+    // return bindScrollAction(_options);
+    return new Iscroll(_container, _options)
   })
 
   module.exports = {}

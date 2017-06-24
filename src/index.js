@@ -59,14 +59,24 @@ const btns = Aotoo.list({
   ]
 })
 
-const LazyList = Aotoo.scroll(treeTest.render(), {
-  container: window,
+// const LazyList = Aotoo.scroll(treeTest.render(), {
+//   container: window,
+//   elements: '.img',
+//   onscroll: function(cur){
+//     console.log(cur.toBottom);
+//   },
+//   oninrange: function(dom) {
+//     console.log(dom);
+//   }
+// })
+
+const IscrollList = Aotoo.iscroll(treeTest.render(), {
   elements: '.img',
-  onscroll: function(cur){
-    console.log(cur.toBottom);
+  onscroll: function(d){
+    console.log('====== 1111');
   },
-  oninview: function(dom) {
-    console.log(dom);
+  onscrollEnd: function(d) {
+    console.log('====== 2222');
   }
 })
 
@@ -74,7 +84,7 @@ const LazyList = Aotoo.scroll(treeTest.render(), {
 const Box = Aotoo.wrap(
   <div>
     {/*{treeTest.render()}*/}
-    <LazyList />
+    <IscrollList />
     {btns}
   </div>
   , function(dom){

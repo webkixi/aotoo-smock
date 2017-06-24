@@ -291,8 +291,8 @@ try {
       _isRange:function(side){
         /*1：加载 -1：跳出循环 0：不加载执行下一个*/
         return {
-          v:side.v ? side.v=="in"?1:-1 : 0,
-          h:side.h ? side.h=="in"?1:-1 : 0,
+          v:side.v ? side.v=="in"?1:-1 : 0,  // 0 表示 top
+          h:side.h ? side.h=="in"?1:-1 : 0,  // 0 表示 left
           c:side.v&&side.h ? side.v=="in"&&side.h=="in"? 1:side.v!="in"?-1:0 : 0
         }[this.mode||"c"]
       },
@@ -333,17 +333,17 @@ try {
       container: _container,
       elements: '',
       mode: 'v',
-      onscroll: _opts.ondataload,
-      oninview: noop(_opts.oninview),
-      onfinish: noop(_opts.onfinish)
+      onscroll: '',
+      oninrange: noop(_opts.oninrange),
+      onloaded: noop(_opts.onloaded)
     };
     var _options = utile.merge(def, _opts || {});
 
     if (typeof _options.elements == 'string') {
       _options.elems = getSiblingElements(_container, _options.elements) || _container.getElementsByTagName('img')
     }
-    _options.ondataload = _options.oninview
-    _options.ondataend = _options.onfinish
+    _options.ondataload = _options.oninrange
+    _options.ondataend = _options.onloaded
     new LazyloadClass(_options);
   })
 

@@ -160,7 +160,7 @@ try {
 
 
     var os = (function( ua ) {
-      let ret = {},
+      var ret = {},
       android = ua.match( /(?:Android);?[\s\/]+([\d.]+)?/ ),
       ios = ua.match( /(?:iPad|iPod|iPhone).*OS\s([\d_]+)/ );
       ret.mobile = (() => !!(android||ios))()
@@ -195,6 +195,7 @@ try {
       if (!opts.direction) opts.direction = 'Y'
 
       if (opts.direction == 'Y') {
+        console.log(iscrl.y, oriPositionY);
         direction = iscrl.y < oriPositionY ? 'down' : 'up'
         oriPositionY = iscrl.y
         return direction
@@ -257,13 +258,16 @@ try {
       preventDefault(opts.preventDefault)
       this.blocks = getBlocks(dom, opts.elements)
       this.container = dom
-      this.opts = opts||{}
+      this.opts = utile.cloneDeep( opts||{} )
       this.timer = ''
+      
+      this.onscroll = this.opts.onscroll
+      this.onscrollend = this.opts.onscrollend
+      this.onpulldown = this.opts.onpulldown
 
-      this.onscroll = opts.onscroll
-      this.onscrollend = opts.onscrollend
-      this.onpulldown = opts.onpulldown
-
+      delete opts.onscroll
+      delete opts.onscrollend
+      delete opts.onpulldown
       this.iscr = new $iscroll(dom, opts)
       this.run()
     }
@@ -307,70 +311,26 @@ try {
           that.timer = setTimeout(function() {
             that.lazyLoad(blck, cb)
             iscr.refresh()
-          }, 1200);
+          }, 600);
         }
         iscr.refresh()
 
         if (isFunction(onscroll) || isFunction(onpulldown) ) {
           iscr.on('scroll', function(){
             var direction = getScrollDirection(iscr, opts)
-            onscroll ? onscroll.call(iscr, direction, lazy) : ''
+            onscroll ? onscroll.call(iscr, lazy, direction) : ''
             onpulldown ? onpulldown.call(iscr, direction, lazy) : ''
           })
         }
 
         iscr.on('scrollEnd', function(){
-          var direction = getScrollDirection(iscr, opts)
           if (isFunction(onscrollend)) {
-            onscrollend.call(iscr, direction, lazy)
+            onscrollend.call(iscr, lazy)
             setTimeout(function(){ iscr.refresh() },200)
           }
         })
       }
     }
-
-    // var scrollState = { ttt: '' }
-    // function bindScrollAction(dom, opts){
-    //   getBlocks(dom, opts)
-    //   var onscroll = opts.onscroll
-    //   var onscrollend = opts.onscrollend
-    //   var onpulldown = opts.onpulldown
-
-    //   opts.disableTouch = os.mobile ? false : true
-    //   opts.disablePointer = os.mobile ? true : false
-      
-    //   preventDefault(opts.preventDefault)
-
-    //   const iscr = new isc(dom, opts)
-    //   iscr.refresh()
-
-    //   if (typeof onscroll == 'function' || 
-    //     typeof onpulldown == 'function') {
-    //     iscr.on('scroll', ()=>{
-    //       // distY
-    //       const diff = getDiff(iscr, opts)
-    //       onscroll ? onscroll.apply(iscr, diff) : ''
-    //       onpulldown ? onpulldown.apply(iscr, diff) : ''
-    //     })
-    //   }
-
-    //   iscr.on('scrollEnd', ()=>{
-    //     const diff = getDiff(iscr, opts)
-    //     scrollState.ttt = setTimeout(()=>{
-    //       lazyLoad(dom, blocks, opts)
-    //     }, 1200)
-
-    //     if (typeof onscrollend == 'function') {
-    //       onscrollend.apply(iscr, diff)
-    //       setTimeout(()=>{
-    //         iscr.refresh()
-    //       },200)
-    //     }
-    //   })
-
-    //   return iscr
-    // }
-
 
     /*
     * $lazy 懒加载
@@ -384,8 +344,14 @@ try {
     *   }
     * })
     */
-    var _container = $id(_opts.container) || container;
+
+    var _container = $id(_opts.container || container);
     var def = {
+      mouseWheel:true,
+      click: true,
+      probeType: 3,
+      disableTouch: os.mobile ? false : true,
+      disablePointer: os.mobile ? true : false,
       container: _container,
       elements: '',
       preventDefault: false,
@@ -395,12 +361,12 @@ try {
       onscrollend: _opts.onscrollend
     };
     var _options = utile.merge(def, _opts || {});
-    // return bindScrollAction(_options);
     return new Iscroll(_container, _options)
   })
 
   module.exports = {}
 } catch (error) {
+  console.error(error)
   console.error('依赖全局变量Aotoo，请参考 https://github.com/webkixi/aotoo');
 }
 

@@ -26,6 +26,7 @@ inject.css(
   `
 )
 
+
 const treeTest = treex({
   props: { 
     data: [
@@ -70,50 +71,72 @@ const btns = Aotoo.list({
 //   }
 // })
 
-const IscrollList = Aotoo.iscroll(treeTest.render(), {
-  elements: '.img',
-  onscroll: function(d){
-    console.log('====== 1111');
-  },
-  onscrollEnd: function(d) {
-    console.log('====== 2222');
-  }
-})
-
-
-const Box = Aotoo.wrap(
+const iscrollBox = (
   <div>
-    {/*{treeTest.render()}*/}
-    <IscrollList />
-    {btns}
+    {treeTest.render()}
   </div>
-  , function(dom){
-    // $('#update').click(function(){
-    //   treeTest.$update({
-    //     data: [
-    //       {title: 'aaaaaa'},
-    //       {title: 'bbbbbb'},
-    //       {title: 'cccccc'}
-    //     ]
-    //   })
-    // })
-    // $('#append').click(function(){
-    //   treeTest.$append({
-    //     data: {title: '1111'}
-    //   })
-    // })
-    // $('#prepend').click(function(){
-    //   treeTest.$prepend({
-    //     data: {title: '1111'}
-    //   })
-    // })
-    // $('#delete').click(function(){
-    //   treeTest.$delete({
-    //     query: {title: '1111'}
-    //   })
-    // })
-  }
 )
 
+function IscrollBox(props){
+  return (
+    <div className='iscrollBox'>
+      {treeTest.render()}
+    </div>
+  )
+}
 
-Aotoo.render(<Box />, 'test')
+inject.css(`
+  .iscrollBox{
+    height: 400px;
+    overflow: hidden;
+  }
+`, 
+function(){
+  const IscrollList = Aotoo.iscroll(<IscrollBox />, {
+    elements: '.img',
+    onscroll: function(lazy, direction){
+      console.log(direction);
+      console.log('====== 1111');
+    },
+    onscrollend: function(lazy) {
+      console.log('====== 2222');
+    }
+  })
+
+
+  const Box = Aotoo.wrap(
+    <div>
+      {/*{treeTest.render()}*/}
+      <IscrollList />
+      {btns}
+    </div>
+    , function(dom){
+      // $('#update').click(function(){
+      //   treeTest.$update({
+      //     data: [
+      //       {title: 'aaaaaa'},
+      //       {title: 'bbbbbb'},
+      //       {title: 'cccccc'}
+      //     ]
+      //   })
+      // })
+      // $('#append').click(function(){
+      //   treeTest.$append({
+      //     data: {title: '1111'}
+      //   })
+      // })
+      // $('#prepend').click(function(){
+      //   treeTest.$prepend({
+      //     data: {title: '1111'}
+      //   })
+      // })
+      // $('#delete').click(function(){
+      //   treeTest.$delete({
+      //     query: {title: '1111'}
+      //   })
+      // })
+    }
+  )
+
+  Aotoo.render(<Box />, 'test')
+})

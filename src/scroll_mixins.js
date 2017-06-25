@@ -248,10 +248,10 @@ try {
         }
 
         if (typeof this.options.onscroll == 'function') {
-          var curViewState = scrollView(this.container)
-          var toBottom = curViewState.scrollheight - (curViewState.scrolltop+curViewState.range.height)
-          curViewState.toBottom = toBottom
-          this._scroll(curViewState)
+          var curViewPosition = scrollView(this.container)
+          var toBottom = curViewPosition.scrollheight - (curViewPosition.scrolltop+curViewPosition.range.height)
+          curViewPosition.toBottom = toBottom
+          this._scroll(curViewPosition)
         }
       },
       // 弃用callee的用法
@@ -328,7 +328,7 @@ try {
       };
     }
 
-    var _container = $id(_opts.container) || container;
+    var _container = $id(_opts.container || container)
     var def = {
       container: _container,
       elements: '',

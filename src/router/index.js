@@ -18,15 +18,104 @@ const Popstate = SAX('Popstate');
   }, false)
 }())
 
-// import BaseClass from 'component/class/base'
 const BaseRouter = require('./_component/_router')
-const inject = require('aotoo-inject')()
-// inject().css('/css/t/animate.css')
+import BaseClass from 'component/class/base'
+import {urlparse, inject} from 'libs'
+
+inject().css('/css/t/animate.css')
+inject().css(`
+  .outHeight{
+    height: 0;
+  }
+`)
+
+// 替换 animate.css 提升效率
+// 有效 fadein
 // inject().css(`
-//   .outHeight{
+//   .routerBoxes{
+//     opacity: 0;
+//     position: relative;
+//     transition: all 0.3s linear;
+//     -webkit-transition: all 0.3s linear;
+//   }
+//   .routerBoxes.fade-in{
+//     opacity: 100;
+//     position: relative;
+//   }
+//   .routerBoxes.fade-out{
+//     transition: all 0.1s linear;
+//     -webkit-transition: all 0.1s linear;
+//     opacity: 0;
 //     height: 0;
 //   }
 // `)
+
+// 无效 faderight
+// inject().css(`
+//   .routerGroup{
+//     position: relative;
+//   }
+//   .routerBoxes{
+//     // opacity: 0;
+//     position: relative;
+//     -webkit-transform: translate3d(100%, 0, 0);
+//     transform: translate3d(100%, 0, 0);
+//   }
+//
+//   .animating{
+//     transition: all 0.3s linear;
+//     -webkit-transition: all 0.3s linear;
+//   }
+//
+//   .routerBoxes.fade-in{
+//     transition: all 0.1s linear;
+//     -webkit-transition: all 0.1s linear;
+//     opacity: 100;
+//     -webkit-transform: translate3d(0, 0, 0);
+//     transform: translate3d(0, 0, 0);
+//   }
+//   .routerBoxes.fade-out{
+//     transition: all 0.1s linear;
+//     -webkit-transition: all 0.1s linear;
+//     opacity: 0;
+//     height: 0;
+//     -webkit-transform: translate3d(0, 0, 0);
+//     transform: translate3d(0, 0, 0);
+//   }
+//
+//   .routerBoxes.fade-in-right{
+//     transition: all 0.3s linear;
+//     -webkit-transition: all 0.3s linear;
+//     -webkit-transform: translate3d(0, 0, 0);
+//     transform: translate3d(0, 0, 0);
+//   }
+//
+//   .routerBoxes.fade-out-right{
+//     transition: all 0.3s linear;
+//     -webkit-transition: all 0.3s linear;
+//     -webkit-transform: translate3d(100%, 0, 0);
+//     transform: translate3d(100%, 0, 0);
+//     height: 0;
+//   }
+// `)
+
+
+
+// function tabsDid(dom, select, itemFun){
+//   let that = this
+//   const config = this.config
+//   that.items = []
+//   let menusBody = $(dom).find('.tabs-menu-body')
+//   menusBody.find('li').each(function(ii, item){
+//     that.items.push(item)
+//     if ($(item).hasClass('itemroot')) {
+//       if (config.fold) $(item).find('.itemCategory ul').addClass('none')
+//     }
+//     if (typeof itemFun == 'function') {
+//       itemFun.call(that, item, ii)
+//     }
+//   })
+// }
 
 function menuMethod(){
   const that = this
@@ -49,40 +138,6 @@ function menuMethod(){
   }
 }
 
-
-function App(config){
-  const rt = Aotoo(BaseRouter, {}, config)
-  rt.extend({
-    append: function(item){
-      const config = this.config
-      if (this.stat == 'finish' && config.globalName) {
-        this.actions.roll('APPEND_ITEM', item)
-      }
-    },
-
-    goback: function(key, data){
-      let backState
-      if (typeof key == 'string') {
-        backState = this.actions.roll('BACK', {key: key, data: data})
-      } else if (typeof key == 'function') {
-        backState = this.actions.roll('BACK')
-        key(backState)
-      } else {
-        backState = this.actions.roll('BACK')
-      }
-    },
-
-    goto: function(key, data){
-      if (typeof key == 'string'){
-        const config = this.config
-        if (this.stat == 'finish' && config.globalName) {
-          this.actions.roll('GOTO', {key: key, data: data})
-        }
-      }
-    }
-  })
-  return rt
-}
 
 class App extends BaseClass {
   constructor(config) {
@@ -110,6 +165,27 @@ class App extends BaseClass {
       this.actions.roll('APPEND_ITEM', item)
     }
   }
+
+  // select(page, dom, data){
+  //   const config = this.config
+  //   const index=page||0
+  //
+  //   const _select = (page, dom, data) => {
+  //     $(this.items).removeClass('selected')
+  //     if (dom && $(dom).hasClass('itemroot')) {
+  //       $(dom).find('.caption:first').toggleClass('fold')
+  //       $(dom).find('ul:first').toggleClass('none')
+  //     } else {
+  //       this.change(page, dom, data)
+  //       $(this.items[(index||0)]).addClass('selected')
+  //       if (this.stat == 'finish' && config.globalName) {
+  //         this.actions.roll('SELECT', {_index: index, data: data})
+  //       }
+  //     }
+  //   }
+  //
+  //   _select(page, dom, data)
+  // }
 
   goback(key, data){
     let backState

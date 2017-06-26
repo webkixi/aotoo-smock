@@ -1,48 +1,3 @@
-import at from './aotoo'
-
-// class Test extends React.Component {
-//   constructor(props){
-//     super(props)
-//     this.state = {
-//       test: '123'
-//     }
-//     this.handlClick = this::this.handlClick
-//   }
-
-//   componentWillMount() {
-//     console.log('======== 111222333');
-//   }
-
-//   componentWillUpdate(nextProps, nextState){
-//     console.log(nextProps, nextState);
-//   }
-
-//   handlClick(){
-//     this.setState({
-//       test: '456'
-//     })
-//   }
-
-//   render(){
-//     return (
-//       <div>
-//         {this.state.test}
-//         <button onClick={this.handlClick}>click</button>
-//       </div>
-//     )
-//   }
-// }
-
-// Aotoo.render(<Test />, 'test')
-
-
-
-
-
-
-
-
-
 function prepaireData(state){
   /**
    * [
@@ -82,7 +37,10 @@ Aotoo.extend('tabs', function(opts, utile){
   let dft = {
     props: {
       tabClass: 'tabsGroupX',
-      mulitple: false
+      mulitple: false,
+      rendered: function(dom){
+        console.log('======== 1111');
+      }
     }
   }
   opts = utile.merge(dft, opts)
@@ -93,8 +51,8 @@ Aotoo.extend('tabs', function(opts, utile){
     constructor(props){
       super(props)
       this.state = {
-        data: this.props.data||[],
-        select: this.props.select||0,
+        data: [],
+        select: 0,
         selectData: {}
       }
 
@@ -183,29 +141,10 @@ Aotoo.extend('tabs', function(opts, utile){
     },
   }
 
+
+
   return Aotoo(Tabs, Action, dft)
 
 })
 
-
-const tabs = Aotoo.tabs({
-  props: {
-    data: [
-      {title: 'aaa', content: '什么'},
-      {title: 'bbb', content: '来了'},
-      {title: 'ccc', content: <div>这个真好吃</div>},
-    ]
-  }
-})
-
-
-const $ = require('jquery')
-tabs.render('test', function(dom){
-  $(dom).find('.tabsMenus li').click(function(){
-    let index = $(this).attr('data-treeid')
-    tabs.$select({
-      select: index
-    })
-  })
-})
 

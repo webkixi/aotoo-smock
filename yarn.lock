@@ -2562,6 +2562,10 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
+jquery@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
+
 js-base64@^2.1.9:
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.1.9.tgz#f0e80ae039a4bd654b5f281fc93f04a914a7fcce"
@@ -3617,8 +3621,8 @@ rc@^1.1.7:
     strip-json-comments "~2.0.1"
 
 react-combinex@^1.0.34:
-  version "1.0.39"
-  resolved "https://registry.yarnpkg.com/react-combinex/-/react-combinex-1.0.39.tgz#4473ee0d1c847da7a8ec84c76d43f2d4403d58bf"
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/react-combinex/-/react-combinex-1.1.1.tgz#6b86a3eacc5ca9cad18a952b0ac19acdb8c6f8fb"
   dependencies:
     babel-preset-stage-0 "^6.24.1"
     fkp-sax "^1.5.10"

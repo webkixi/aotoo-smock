@@ -71,19 +71,26 @@ const btns = Aotoo.list({
 //   }
 // })
 
-const iscrollBox = (
-  <div>
-    {treeTest.render()}
-  </div>
-)
+
+
+
 
 function IscrollBox(props){
-  return (
-    <div className='iscrollBox'>
-      {treeTest.render()}
-    </div>
-  )
+  return <div className='iscrollBox'>{treeTest.render()}</div>
 }
+
+const IscrollList = Aotoo.iscroll(<IscrollBox />, {
+  elements: '.img',
+  onscroll: function(lazy, direction){
+    lazy(function(ele){
+      console.log(ele);
+    })
+    // console.log('====== 1111');
+  },
+  onscrollend: function(lazy) {
+    console.log('====== 2222');
+  }
+})
 
 inject.css(`
   .iscrollBox{
@@ -92,22 +99,9 @@ inject.css(`
   }
 `, 
 function(){
-  const IscrollList = Aotoo.iscroll(<IscrollBox />, {
-    elements: '.img',
-    onscroll: function(lazy, direction){
-      console.log('====== 1111');
-    },
-    onscrollend: function(lazy) {
-      console.log('====== 2222');
-    }
-  })
-
-
   const Box = Aotoo.wrap(
     <div>
-      {/*{treeTest.render()}*/}
       <IscrollList />
-      {btns}
     </div>
     , function(dom){
       // $('#update').click(function(){

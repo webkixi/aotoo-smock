@@ -1,5 +1,5 @@
 import aotoo from 'aotoo'
 window.Aotoo = aotoo
-require('./scroll_mixins')
-require('./iscroll_mixins')
+require('aotoo-mixins-scroll')
+require('aotoo-mixins-iscroll')
 export default aotoo

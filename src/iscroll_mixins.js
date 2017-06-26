@@ -12,7 +12,7 @@
 	* })
 	*/
 try {
-  Aotoo.extend('iscroll', function(container, _opts, utile){
+  Aotoo.wrapEx('iscroll', function(container, _opts, utile){
     function isWindow(c){
       return c==window||c==document||c==null||!c.tagName||/body|html/i.test(c.tagName);/*判断容器是否是window*/
     }
@@ -308,7 +308,7 @@ try {
         var lazy = function(blks, cb){
           clearTimeout(that.timer)
           that.timer = setTimeout(function() {
-            that.lazyLoad(blck, cb)
+            that.lazyLoad(blks, cb)
             iscr.refresh()
           }, 600);
         }

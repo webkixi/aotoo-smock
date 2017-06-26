@@ -2,7 +2,7 @@ import at from './aotoo'
 import treex from 'aotoo-react-treex'
 import style from './index.styl'
 
-const inject = require('aotoo-inject')()
+const inject = Aotoo.inject()
 
 inject.css([
   '/index.css',
@@ -95,7 +95,6 @@ function(){
   const IscrollList = Aotoo.iscroll(<IscrollBox />, {
     elements: '.img',
     onscroll: function(lazy, direction){
-      console.log(direction);
       console.log('====== 1111');
     },
     onscrollend: function(lazy) {

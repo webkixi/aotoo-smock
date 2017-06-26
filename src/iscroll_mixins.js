@@ -195,7 +195,6 @@ try {
       if (!opts.direction) opts.direction = 'Y'
 
       if (opts.direction == 'Y') {
-        console.log(iscrl.y, oriPositionY);
         direction = iscrl.y < oriPositionY ? 'down' : 'up'
         oriPositionY = iscrl.y
         return direction

@@ -34,8 +34,7 @@
     "webpack-dev-server": "^1.16.3"
   },
   "dependencies": {
-    "aotoo": "^1.2.0",
-    "aotoo-inject": "^1.0.6",
+    "aotoo": "^1.2.1",
     "aotoo-react-treex": "^1.0.4",
     "ejs": "^2.5.6",
     "iscroll": "^5.2.0"

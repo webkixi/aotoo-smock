@@ -98,9 +98,9 @@ anymatch@^1.3.0:
     arrify "^1.0.0"
     micromatch "^2.1.5"
 
-aotoo-inject@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/aotoo-inject/-/aotoo-inject-1.0.6.tgz#5e0cb8246a84f879efde8819fb5156a97fe2e119"
+aotoo-inject@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/aotoo-inject/-/aotoo-inject-1.0.7.tgz#2c832356258456972a07bd888a0c104c2403cac9"
   dependencies:
     blueimp-md5 "^2.7.0"
     fkp-sax "^1.5.19"
@@ -109,10 +109,11 @@ aotoo-react-treex@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/aotoo-react-treex/-/aotoo-react-treex-1.0.4.tgz#5d71524978abfc1e5717465c1ea5e11e8c1f5148"
 
-aotoo@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/aotoo/-/aotoo-1.2.0.tgz#9a6e866854ce3fc2eebe31d37cb30b4a53da44c9"
+aotoo@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/aotoo/-/aotoo-1.2.1.tgz#8434d8d18b8512f2db24cc3b71aa8fe986d8bd08"
   dependencies:
+    aotoo-inject "^1.0.7"
     lodash.clonedeep "^4.5.0"
     lodash.filter "^4.6.0"
     lodash.find "^4.6.0"

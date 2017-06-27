@@ -99,8 +99,8 @@ anymatch@^1.3.0:
     micromatch "^2.1.5"
 
 aotoo-inject@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/aotoo-inject/-/aotoo-inject-1.0.7.tgz#2c832356258456972a07bd888a0c104c2403cac9"
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/aotoo-inject/-/aotoo-inject-1.0.8.tgz#a55c9fd45647fafabdd291860898318d35602e0b"
   dependencies:
     blueimp-md5 "^2.7.0"
     fkp-sax "^1.5.19"
@@ -117,9 +117,9 @@ aotoo-react-treex@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/aotoo-react-treex/-/aotoo-react-treex-1.0.4.tgz#5d71524978abfc1e5717465c1ea5e11e8c1f5148"
 
-aotoo@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/aotoo/-/aotoo-1.2.5.tgz#2c6bef1e841de99ff6f36f31ac13b05c2ae571d9"
+aotoo@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/aotoo/-/aotoo-1.2.6.tgz#3e04cbdf6b00f42f19f48084bc8549f8a7cf5a16"
   dependencies:
     aotoo-inject "^1.0.7"
     lodash.clonedeep "^4.5.0"
@@ -3621,8 +3621,8 @@ rc@^1.1.7:
     strip-json-comments "~2.0.1"
 
 react-combinex@^1.0.34:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/react-combinex/-/react-combinex-1.1.2.tgz#93f3e81c5015fc48a571c7f09e23547fee3ea101"
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/react-combinex/-/react-combinex-1.1.4.tgz#40957fa210eb6fb06eb2dddb04a97601edcbbec3"
   dependencies:
     babel-preset-stage-0 "^6.24.1"
     fkp-sax "^1.5.10"

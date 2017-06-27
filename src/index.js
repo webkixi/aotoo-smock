@@ -192,25 +192,52 @@ Aotoo.extend('tabs', function(opts, utile){
 })
 
 
+const WrapElement = Aotoo.wrap(
+  <div>这个真好吃</div>, {
+    rendered: function(dom){
+      console.log('========= rendered');
+    },
+    leave: function(){
+      console.log('========= leave');
+    }
+  }
+)
+
 const tabs = Aotoo.tabs({
   props: {
     data: [
       {title: 'aaa', content: '什么', idf: 'le1', itemClass: 'aabbcc'},
       {title: 'hello', content: '什么, what', parent: 'le1'},
       {title: 'bbb', content: '来了'},
-      {title: 'ccc', content: <div>这个真好吃</div>},
+      {title: 'ccc', content: <WrapElement />},
     ]
   }
 })
 
 
+const inject = Aotoo.inject
 const $ = require('jquery')
 tabs.render('test', function(dom){
-  $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
-    let index = $(this).attr('data-treeid')
-    tabs.$select({
-      select: index
+  inject.css(`
+    .tabsGroup{
+
+    }
+    .tabsGroup ul{
+      list-style: none;
+    }
+    .tabsGroup .tabsMenus li{
+      display: inline-block;
+      margin: 1em;
+    }
+  `, function(){
+    console.log('====== 1111');
+    $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
+      let index = $(this).attr('data-treeid')
+      tabs.$select({
+        select: index
+      })
     })
   })
+  
 })
 

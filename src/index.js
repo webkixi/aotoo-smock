@@ -50,16 +50,20 @@ function prepaireData(state){
    *   {title, content, idf, parent, attr},
    * ]
    */
+  const that = this
   let menuData = []
   let contentData = []
   state.data.forEach( (item, ii) => {
+    const itemCls = ii == state.select ? item.itemClass ? item.itemClass+' select' : 'select' : ''
     // 准备菜单数据
     menuData.push({
       index: ii,
       title: item.title,
       idf: item.idf,
       parent: item.parent,
-      attr: item.attr
+      attr: item.attr,
+      itemClass: itemCls,
+      itemMethod: item.itemMethod
     })
 
     // 准备内容数据
@@ -69,7 +73,7 @@ function prepaireData(state){
       content: item.content
     })
   })
-
+  
   this.saxer.append({
     MenuData: menuData,
     ContentData: contentData
@@ -191,7 +195,8 @@ Aotoo.extend('tabs', function(opts, utile){
 const tabs = Aotoo.tabs({
   props: {
     data: [
-      {title: 'aaa', content: '什么'},
+      {title: 'aaa', content: '什么', idf: 'le1', itemClass: 'aabbcc'},
+      {title: 'hello', content: '什么, what', parent: 'le1'},
       {title: 'bbb', content: '来了'},
       {title: 'ccc', content: <div>这个真好吃</div>},
     ]
@@ -201,7 +206,7 @@ const tabs = Aotoo.tabs({
 
 const $ = require('jquery')
 tabs.render('test', function(dom){
-  $(dom).find('.tabsMenus li').click(function(){
+  $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
     let index = $(this).attr('data-treeid')
     tabs.$select({
       select: index

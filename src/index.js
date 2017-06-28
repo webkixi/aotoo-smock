@@ -242,13 +242,15 @@ Aotoo.extend('tabs', function(opts, utile){
     }
   }
 
+
+  const rootUrl = location.href.split('#')[0]
   class Router extends Tabs {
     constructor(props){
       super(props)
-      this.direction = 'goto'
       this.state = utile.merge(this.state, {
         flag: true,
-        rootUrl: this.props.rootUrl || location.href.split('#')[0]
+        rootUrl: this.props.rootUrl || rootUrl,
+        direction: 'goto'
       })
 
       this.historyPush = this.historyPush.bind(this)
@@ -324,7 +326,7 @@ Aotoo.extend('tabs', function(opts, utile){
       let animateout = this.animateout
       let pre, preId, prePage, preContent
 
-      if (this.direction == 'back') {
+      if (this.state.direction == 'back') {
         animateout = this.animateback
         animatein =  this.animaterein
         pre = _leftStack.pop()
@@ -357,17 +359,25 @@ Aotoo.extend('tabs', function(opts, utile){
 
 
   const Action = {
-    UPDATE: function(ostate, opts){
+    UPDATE: function(ostate, opts, ctx){
       let state = this.curState
       state.data = opts.data
       return state
     },
-    SELECT: function(ostate, opts){
+
+    SELECT: function(ostate, opts, ctx){
       let state = this.curState
 
+      // select
       state.select = opts.select
+
+      // selectData
       if (opts.data) {
         state.selectData = opts.data
+      }
+
+      if (opts.direction) {
+        state.direction = opts.direction
       }
       
       if (typeof opts.cb == 'function') {
@@ -378,7 +388,54 @@ Aotoo.extend('tabs', function(opts, utile){
     },
   }
 
-  return Aotoo(Router, Action, dft)
+  const router = Aotoo(Router, Action, dft)
+  router.extend({
+    getWhereInfo: function(where){
+      const menu_data = this.saxer.get().MenuData
+      return utile.find(menu_data, {path: where})
+    },
+    goto: function(where, data){
+      const target = this.getWhereInfo(where)
+      this.$select({
+        select: target.index,
+        selectData: data,
+        direction: 'goto'
+      })
+    },
+    back: function(where, data){
+      if (where) {
+        const target = this.getWhereInfo(where)
+        this.$select({
+          select: target.index,
+          selectData: data,
+          direction: 'back'
+        })
+      } else {
+        const whereBack = this.historyPop()
+        // whereBack: {
+          // index: props.index,
+          // key: props.key,
+          // data: props.data,
+          // rootUrl: this.state.rootUrl,
+          // preState: curHistoryState,
+          // timeLine: _historyCount,
+          // flag: this.state.flag
+        //}
+
+        if (whereBack) {
+          this.$select({
+            select: whereBack.index,
+            selectData: whereBack.data,
+            direction: 'back'
+          })
+          return whereBack
+
+        } else {
+          pushState({rootUrl: rootUrl}, true)
+        }
+      }
+    }
+  })
 
 })
 

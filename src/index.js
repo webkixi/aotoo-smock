@@ -73,7 +73,7 @@ function prepaireData(state){
       content: item.content
     })
   })
-  
+
   this.saxer.append({
     MenuData: menuData,
     ContentData: contentData
@@ -82,9 +82,12 @@ function prepaireData(state){
   this.createMenu()
 }
 
+
+
+
 require('./tabs.styl')
 Aotoo.extend('tabs', function(opts, utile){
-  
+
   let dft = {
     props: {
       tabClass: 'tabsGroupX',
@@ -212,9 +215,13 @@ const WrapElement = Aotoo.wrap(
 
 const tabs = Aotoo.tabs({
   props: {
+    mulitple: true,         //默认为false ,为true时，组件里所有content都会显示
+    // tabClass: 'tabs-nornal',
+    // tabClass: 'tabs-floor-left',
+    tabClass: 'tabs-nornal-top',
     data: [
-      {title: 'aaa', content: '什么', idf: 'le1', itemClass: 'aabbcc'},
-      {title: 'hello', content: '什么, what', parent: 'le1'},
+      // {title: 'aaa', content: '什么', idf: 'le1', itemClass: 'aabbcc'},
+      {title: 'aaa', content: '什么, what'},
       {title: 'bbb', content: '来了'},
       {title: 'ccc', content: <WrapElement />},
     ]
@@ -223,13 +230,28 @@ const tabs = Aotoo.tabs({
 
 
 const $ = require('jquery')
+// //用于tabs-floor-left
+// tabs.render('test', function(dom){
+//   $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
+//     let index = $(this).attr('data-treeid')
+//     let num = parseInt(index) + 1
+//     tabs.$select({
+//       select: index
+//     })
+//     let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top
+//     $("html,body").animate({scrollTop: target_top}, 500)
+//   })
+// })
 tabs.render('test', function(dom){
   $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
     let index = $(this).attr('data-treeid')
+    let num = parseInt(index) + 1     // mlitple = false  ,tabClass: 'tabs-nornal-top',
     tabs.$select({
       select: index,
       cb: function(){ }
     })
+    // let target_top = $(this).parents('.tabsMenus').next('.tabsBoxes').offset().top     //适合于 mlitple = true，tabClass: 'tabs-nornal-top',
+    let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top - 50   // mlitple = false    50是tabsMenus的高度，tabClass: 'tabs-nornal-top',
+    $("html,body").animate({scrollTop: target_top}, 500)  //适合于 mlitple = true与false，tabClass: 'tabs-nornal-top',
   })
 })
-

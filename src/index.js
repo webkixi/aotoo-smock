@@ -82,7 +82,9 @@ function prepaireData(state){
   this.createMenu()
 }
 
+require('./tabs.styl')
 Aotoo.extend('tabs', function(opts, utile){
+  
   let dft = {
     props: {
       tabClass: 'tabsGroupX',
@@ -183,6 +185,11 @@ Aotoo.extend('tabs', function(opts, utile){
     SELECT: function(ostate, opts){
       let state = this.curState
       state.select = opts.select
+      if (typeof opts.cb == 'function') {
+        setTimeout(function() {
+          opts.cb()
+        }, 100);
+      }
       return state
     },
   }
@@ -215,29 +222,14 @@ const tabs = Aotoo.tabs({
 })
 
 
-const inject = Aotoo.inject
 const $ = require('jquery')
 tabs.render('test', function(dom){
-  inject.css(`
-    .tabsGroup{
-
-    }
-    .tabsGroup ul{
-      list-style: none;
-    }
-    .tabsGroup .tabsMenus li{
-      display: inline-block;
-      margin: 1em;
-    }
-  `, function(){
-    console.log('====== 1111');
-    $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
-      let index = $(this).attr('data-treeid')
-      tabs.$select({
-        select: index
-      })
+  $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
+    let index = $(this).attr('data-treeid')
+    tabs.$select({
+      select: index,
+      cb: function(){ }
     })
   })
-  
 })
 

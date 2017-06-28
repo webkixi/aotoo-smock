@@ -1,39 +1,56 @@
 import at from './aotoo'
 
-// class Test extends React.Component {
-//   constructor(props){
-//     super(props)
-//     this.state = {
-//       test: '123'
-//     }
-//     this.handlClick = this::this.handlClick
-//   }
 
-//   componentWillMount() {
-//     console.log('======== 111222333');
-//   }
 
-//   componentWillUpdate(nextProps, nextState){
-//     console.log(nextProps, nextState);
-//   }
 
-//   handlClick(){
-//     this.setState({
-//       test: '456'
-//     })
-//   }
 
-//   render(){
-//     return (
-//       <div>
-//         {this.state.test}
-//         <button onClick={this.handlClick}>click</button>
-//       </div>
-//     )
-//   }
-// }
+const Popstate = SAX('Popstate');
+(function() {
+  var blockPopstateEvent = document.readyState != "complete";
+  window.addEventListener("load", function() {
+    setTimeout(function(){ blockPopstateEvent = false; }, 0)
+  }, false)
+  window.addEventListener("popstate", function(evt) {
+    if (blockPopstateEvent && document.readyState=="complete") {
+      evt.preventDefault()
+      evt.stopImmediatePropagation()
+    } else {
+      Popstate.trigger()
+    }
+  }, false)
+}())
 
-// Aotoo.render(<Test />, 'test')
+function pushState(props, nohash){
+	const flag = props.flag ? (typeof props.flag == 'boolean' ? '#' : props.flag) : ''
+	const uri = flag ? props.rootUrl + flag + props.key : props.rootUrl
+  window.history.pushState(props, '', uri)
+}
+
+let _history = []
+let _historyCount = 0
+let _leftStack = []
+const animatecss = {
+	fade: {
+		in: ' fadeIn animated-faster',
+		rein: ' fadeIn animated-fastest',
+		out: ' fadeOut contentHide animated-fastest',
+		back: ' fadeOut contentHide animated-faster'
+	},
+
+	left: {
+		in: ' fadeInLeft animated-faster',
+		rein: ' fadeIn animated-fastest',
+		out: ' fadeOut contentHide animated-fastest',
+		back: ' fadeOutLeft contentHide animated-faster'
+	},
+
+	right: {
+		in: ' fadeInRight animated-faster',
+		rein: ' fadeIn animated-fastest',
+		out: ' outHeight fadeOut contentHide animated-fastest',
+		back: ' outHeight fadeOutRight contentHide animated-faster',
+	}
+}
 
 
 
@@ -46,8 +63,8 @@ import at from './aotoo'
 function prepaireData(state){
   /**
    * [
-   *   {title, content, idf, parent, attr},
-   *   {title, content, idf, parent, attr},
+   *   {title, content, idf, parent, attr, path},
+   *   {title, content, idf, parent, attr, path},
    * ]
    */
   const that = this
@@ -58,6 +75,7 @@ function prepaireData(state){
     // 准备菜单数据
     menuData.push({
       index: ii,
+      path: item.path,
       title: item.title,
       idf: item.idf,
       parent: item.parent,
@@ -69,6 +87,7 @@ function prepaireData(state){
     // 准备内容数据
     contentData.push({
       index: ii,
+      path: item.path,
       idf: item.idf,
       content: item.content
     })
@@ -104,10 +123,14 @@ Aotoo.extend('tabs', function(opts, utile){
       this.state = {
         data: this.props.data||[],
         select: this.props.select||0,
-        selectData: {}
+        selectData: {},
+        showMenu: this.props.showMenu||true,
       }
 
       this.createMenu = this.createMenu.bind(this)
+      this.getContent = this.getContent.bind(this)
+      this.findPath = this.findPath.bind(this)
+      this.getRealContent = this.getRealContent.bind(this)
     }
 
     componentWillMount() {
@@ -133,7 +156,41 @@ Aotoo.extend('tabs', function(opts, utile){
       })
     }
 
-    getContent(){
+    findPath(where){
+      const type = typeof where
+      const menu_data = this.saxer.get().MenuData
+      if (type == 'string') {
+        return utile.find(menu_data, {path: where})
+      }
+    }
+
+    getRealContent(cnt){
+      if (!cnt) return ' '
+      const selectData = this.state.selectData
+      const type = typeof cnt
+      switch (type) {
+        case 'function':
+          return cnt(selectData)
+          break;
+        case 'object':
+          if (cnt['$$typeof']){
+            return cnt
+          }
+          // enter, leave, main, loaded
+          if (typeof cnt.enter == 'function') {
+            return cnt.enter(selectData)
+          }
+          break;
+        default:
+          return cnt
+          
+      }
+      if (typeof cnt == 'function') {
+        return cnt()
+      }
+    }
+
+    getContent(id){
       const select = this.state.select
       const contents = this.saxer.get().ContentData
       let _contents = []
@@ -143,7 +200,7 @@ Aotoo.extend('tabs', function(opts, utile){
         contents.forEach( (item, ii) => {
           if (!item.idf) {
             _contents.push({
-              title: item.content,
+              title: this.getRealContent(item.content),
               itemClass: item.index == select ? 'select' : ''
             })
           }
@@ -152,14 +209,21 @@ Aotoo.extend('tabs', function(opts, utile){
           data: _contents
         })
       }
-
-      contents.forEach( item => {
-        if (item.index == select) {
-          selectContent = item.content
-        }
-      })
-
-      return selectContent
+      
+      if (id && id == select) {
+        selectContent = contents[select]
+      } else {
+        contents.forEach( item => {
+          if (item.path&&item.path == id) {
+            selectContent = item.content
+          } else {
+            if (item.index == select) {
+              selectContent = item.content
+            }
+          }
+        })
+      }
+      return this.getRealContent(selectContent)
     }
 
     render(){
@@ -171,11 +235,124 @@ Aotoo.extend('tabs', function(opts, utile){
 
       return (
         <div className={cls}>
-          <div className='tabsMenus'>{jsxMenu}</div>
+          { this.state.showMenu ? <div className='tabsMenus'>{jsxMenu}</div> : '' }
           <div className={boxes_cls}>{content}</div>
         </div>
       )
     }
+  }
+
+  class Router extends Tabs {
+    constructor(props){
+      super(props)
+      this.direction = 'goto'
+      this.state = utile.merge(this.state, {
+        flag: true,
+        rootUrl: this.props.rootUrl || location.href.split('#')[0]
+      })
+
+      this.historyPush = this.historyPush.bind(this)
+    }
+    
+    componentWillMount() {
+      super.componentWillMount()
+      const menuData = this.saxer.get().MenuData
+      const contentData = this.saxer.get().ContentData
+      const selectItem = menuData[this.state.select]
+
+      this.historyPush({
+        index: selectItem.index,
+        key: selectItem.path,
+        data: {}
+      })
+    }
+
+    historyPop(){
+      let state = _history.pop()
+      let rightState;
+      if (!state) return false
+      if (this.state.flag) {
+        rightState = (state && state.preState)
+        if (rightState) {
+          pushState({
+            index: rightState.index,
+            key: rightState.key,
+            data: rightState.data,
+            rootUrl: this.state.rootUrl,
+            preState: "curHistoryState",
+            flag: this.state.flag
+          })
+        }
+      } else {
+        rightState = _history.pop()
+        pushState({rootUrl: this.state.rootUrl, flag: this.state.flag}, true)
+      }
+
+      return rightState
+    }
+
+    historyPush(props){
+      if (this.state.flag) {
+        const curHistoryState = window.history.state
+        pushState({
+          index: props.index,
+          key: props.key,
+          data: props.data,
+          rootUrl: this.state.rootUrl,
+          preState: curHistoryState,
+          timeLine: _historyCount,
+          flag: this.state.flag
+        })
+      } else {
+        pushState({rootUrl: this.state.rootUrl, flag: this.state.flag}, true)
+      }
+
+      const preState = _history[_history.length-1]
+      _history.push({
+        index: props.index,
+        key: props.key,
+        data: props.data,
+        preState: preState,
+        timeLine: _historyCount
+      })
+
+      _historyCount++
+    }
+
+    getPage(){
+      let animatein = this.animatein
+      let animateout = this.animateout
+      let pre, preId, prePage, preContent
+
+      if (this.direction == 'back') {
+        animateout = this.animateback
+        animatein =  this.animaterein
+        pre = _leftStack.pop()
+      } else {
+        pre = _leftStack.length ? _leftStack[_leftStack.length-1] : '';
+      }
+
+      if (pre && pre.id !== id) {
+        this.prePageContent = pre
+        preContent = this.enterContent(pre.content)
+        prePage = <div key={_.uniqueId('Router_Mulitple_')} className={boxCls+animateout}>{preContent}</div>
+      }
+
+      const _content = this.getContent(id)
+      const content = this.enterContent(this.getContent(id))
+      const curPage = <div key={_.uniqueId('Router_Mulitple_')} className={boxCls+animatein}>{content}</div>
+
+      _leftStack.push({
+        id: id,
+        content: _content
+      })
+
+      return [
+        prePage,
+        curPage
+      ]
+    }
+
   }
 
 
@@ -187,17 +364,21 @@ Aotoo.extend('tabs', function(opts, utile){
     },
     SELECT: function(ostate, opts){
       let state = this.curState
+
       state.select = opts.select
-      if (typeof opts.cb == 'function') {
-        setTimeout(function() {
-          opts.cb()
-        }, 100);
+      if (opts.data) {
+        state.selectData = opts.data
       }
+      
+      if (typeof opts.cb == 'function') {
+        setTimeout(function() { opts.cb() }, 100);
+      }
+
       return state
     },
   }
 
-  return Aotoo(Tabs, Action, dft)
+  return Aotoo(Router, Action, dft)
 
 })
 

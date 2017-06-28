@@ -1,3 +1,48 @@
+import at from './aotoo'
+
+// class Test extends React.Component {
+//   constructor(props){
+//     super(props)
+//     this.state = {
+//       test: '123'
+//     }
+//     this.handlClick = this::this.handlClick
+//   }
+
+//   componentWillMount() {
+//     console.log('======== 111222333');
+//   }
+
+//   componentWillUpdate(nextProps, nextState){
+//     console.log(nextProps, nextState);
+//   }
+
+//   handlClick(){
+//     this.setState({
+//       test: '456'
+//     })
+//   }
+
+//   render(){
+//     return (
+//       <div>
+//         {this.state.test}
+//         <button onClick={this.handlClick}>click</button>
+//       </div>
+//     )
+//   }
+// }
+
+// Aotoo.render(<Test />, 'test')
+
+
+
+
+
+
+
+
+
 function prepaireData(state){
   /**
    * [
@@ -5,16 +50,20 @@ function prepaireData(state){
    *   {title, content, idf, parent, attr},
    * ]
    */
+  const that = this
   let menuData = []
   let contentData = []
   state.data.forEach( (item, ii) => {
+    const itemCls = ii == state.select ? item.itemClass ? item.itemClass+' select' : 'select' : ''
     // 准备菜单数据
     menuData.push({
       index: ii,
       title: item.title,
       idf: item.idf,
       parent: item.parent,
-      attr: item.attr
+      attr: item.attr,
+      itemClass: itemCls,
+      itemMethod: item.itemMethod
     })
 
     // 准备内容数据
@@ -24,7 +73,7 @@ function prepaireData(state){
       content: item.content
     })
   })
-
+  
   this.saxer.append({
     MenuData: menuData,
     ContentData: contentData
@@ -33,14 +82,13 @@ function prepaireData(state){
   this.createMenu()
 }
 
+require('./tabs.styl')
 Aotoo.extend('tabs', function(opts, utile){
+  
   let dft = {
     props: {
       tabClass: 'tabsGroupX',
-      mulitple: false,
-      rendered: function(dom){
-        console.log('======== 1111');
-      }
+      mulitple: false
     }
   }
   opts = utile.merge(dft, opts)
@@ -51,8 +99,8 @@ Aotoo.extend('tabs', function(opts, utile){
     constructor(props){
       super(props)
       this.state = {
-        data: [],
-        select: 0,
+        data: this.props.data||[],
+        select: this.props.select||0,
         selectData: {}
       }
 
@@ -137,14 +185,51 @@ Aotoo.extend('tabs', function(opts, utile){
     SELECT: function(ostate, opts){
       let state = this.curState
       state.select = opts.select
+      if (typeof opts.cb == 'function') {
+        setTimeout(function() {
+          opts.cb()
+        }, 100);
+      }
       return state
     },
   }
-
-
 
   return Aotoo(Tabs, Action, dft)
 
 })
 
+
+const WrapElement = Aotoo.wrap(
+  <div>这个真好吃</div>, {
+    rendered: function(dom){
+      console.log('========= rendered');
+    },
+    leave: function(){
+      console.log('========= leave');
+    }
+  }
+)
+
+const tabs = Aotoo.tabs({
+  props: {
+    data: [
+      {title: 'aaa', content: '什么', idf: 'le1', itemClass: 'aabbcc'},
+      {title: 'hello', content: '什么, what', parent: 'le1'},
+      {title: 'bbb', content: '来了'},
+      {title: 'ccc', content: <WrapElement />},
+    ]
+  }
+})
+
+
+const $ = require('jquery')
+tabs.render('test', function(dom){
+  $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
+    let index = $(this).attr('data-treeid')
+    tabs.$select({
+      select: index,
+      cb: function(){ }
+    })
+  })
+})
 

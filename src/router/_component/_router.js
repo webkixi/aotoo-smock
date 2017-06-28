@@ -3,7 +3,6 @@
 * 返回 div > (ul > li)*n
 */
 import store from 'component/mixins/storehlc'
-import {BaseList, pure} from 'component/modules/list/base_list'
 import {tree} from 'component'
 import iscrollHlc from 'component/mixins/iscrollhlc'
 
@@ -504,10 +503,8 @@ class TapsApp extends React.Component {
 	}
 }
 
-module.exports = TapsApp
+function storeIt(key){
+	return store(key, TapsApp)
+}
 
-// function storeIt(key){
-// 	return store(key, TapsApp)
-// }
-//
-// module.exports = storeIt
+module.exports = storeIt

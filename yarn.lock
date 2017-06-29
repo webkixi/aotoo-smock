@@ -121,9 +121,9 @@ aotoo-react-treex@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/aotoo-react-treex/-/aotoo-react-treex-1.0.4.tgz#5d71524978abfc1e5717465c1ea5e11e8c1f5148"
 
-aotoo@^1.2.6:
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/aotoo/-/aotoo-1.2.6.tgz#3e04cbdf6b00f42f19f48084bc8549f8a7cf5a16"
+aotoo@^1.2.8:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/aotoo/-/aotoo-1.2.8.tgz#b19f12a6fb1040faf51f115d02ab6c8165a9cf61"
   dependencies:
     aotoo-inject "^1.0.7"
     lodash.clonedeep "^4.5.0"

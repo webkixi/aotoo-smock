@@ -2,8 +2,6 @@ import at from './aotoo'
 
 
 
-
-
 const Popstate = SAX('Popstate');
 (function() {
   var blockPopstateEvent = document.readyState != "complete";
@@ -129,8 +127,6 @@ Aotoo.extend('tabs', function(opts, utile){
 
       this.createMenu = this.createMenu.bind(this)
       this.getContent = this.getContent.bind(this)
-      this.findPath = this.findPath.bind(this)
-      this.getRealContent = this.getRealContent.bind(this)
     }
 
     componentWillMount() {
@@ -156,40 +152,6 @@ Aotoo.extend('tabs', function(opts, utile){
       })
     }
 
-    findPath(where){
-      const type = typeof where
-      const menu_data = this.saxer.get().MenuData
-      if (type == 'string') {
-        return utile.find(menu_data, {path: where})
-      }
-    }
-
-    getRealContent(cnt){
-      if (!cnt) return ' '
-      const selectData = this.state.selectData
-      const type = typeof cnt
-      switch (type) {
-        case 'function':
-          return cnt(selectData)
-          break;
-        case 'object':
-          if (cnt['$$typeof']){
-            return cnt
-          }
-          // enter, leave, main, loaded
-          if (typeof cnt.enter == 'function') {
-            return cnt.enter(selectData)
-          }
-          break;
-        default:
-          return cnt
-          
-      }
-      if (typeof cnt == 'function') {
-        return cnt()
-      }
-    }
-
     getContent(id){
       const select = this.state.select
       const contents = this.saxer.get().ContentData
@@ -200,8 +162,8 @@ Aotoo.extend('tabs', function(opts, utile){
         contents.forEach( (item, ii) => {
           if (!item.idf) {
             _contents.push({
-              title: this.getRealContent(item.content),
-              itemClass: item.index == select ? 'select' : ''
+              title: item.content,
+              itemClass: (id&&item.path&&item.path == id) ? 'select' : item.index == id ? 'select' : item.index == select ? 'select' : ''
             })
           }
         })
@@ -209,26 +171,30 @@ Aotoo.extend('tabs', function(opts, utile){
           data: _contents
         })
       }
-      
-      if (id && id == select) {
-        selectContent = contents[select]
-      } else {
-        contents.forEach( item => {
-          if (item.path&&item.path == id) {
+
+      contents.forEach( item => {
+        if (id&&item.path&&item.path == id) {
+          selectContent = item.content
+        } 
+        else if(id&&item.index == id) {
+          selectContent = item.content
+        } 
+        else {
+          if (item.index == select) {
             selectContent = item.content
-          } else {
-            if (item.index == select) {
-              selectContent = item.content
-            }
           }
-        })
-      }
-      return this.getRealContent(selectContent)
+        }
+      })
+
+      return selectContent
     }
 
     render(){
       const jsxMenu = this.saxer.get().MenuJsx
-      const content = this.getContent()
+      let content = this.getContent()
+      if (typeof content == 'function') {
+        content = content(this.state.selectData)
+      }
 
       const cls = !this.props.tabClass ? 'tabsGroup ' : 'tabsGroup ' + this.props.tabClass
       const boxes_cls = !this.props.mulitple ? 'tabsBoxes' : 'tabsBoxes mulitple'
@@ -252,8 +218,11 @@ Aotoo.extend('tabs', function(opts, utile){
         rootUrl: this.props.rootUrl || rootUrl,
         direction: 'goto'
       })
+      this.prePage
 
       this.historyPush = this.historyPush.bind(this)
+      this.getRealContent = this.getRealContent.bind(this)
+      this.findPath = this.findPath.bind(this)
     }
     
     componentWillMount() {
@@ -269,28 +238,12 @@ Aotoo.extend('tabs', function(opts, utile){
       })
     }
 
-    historyPop(){
-      let state = _history.pop()
-      let rightState;
-      if (!state) return false
-      if (this.state.flag) {
-        rightState = (state && state.preState)
-        if (rightState) {
-          pushState({
-            index: rightState.index,
-            key: rightState.key,
-            data: rightState.data,
-            rootUrl: this.state.rootUrl,
-            preState: "curHistoryState",
-            flag: this.state.flag
-          })
-        }
-      } else {
-        rightState = _history.pop()
-        pushState({rootUrl: this.state.rootUrl, flag: this.state.flag}, true)
+    findPath(where){
+      const type = typeof where
+      const menu_data = this.saxer.get().MenuData
+      if (type == 'string') {
+        return utile.find(menu_data, {path: where})
       }
-
-      return rightState
     }
 
     historyPush(props){
@@ -321,7 +274,51 @@ Aotoo.extend('tabs', function(opts, utile){
       _historyCount++
     }
 
-    getPage(){
+    historyPop(){
+      let state = _history.pop()
+      if (!state) return false
+      let rightState;
+      if (this.state.flag) {
+        rightState = (state && state.preState)
+        if (rightState) {
+          pushState({
+            index: rightState.index,
+            key: rightState.key,
+            data: rightState.data,
+            rootUrl: this.state.rootUrl,
+            preState: "curHistoryState",
+            flag: this.state.flag
+          })
+        }
+      } else {
+        rightState = _history.pop()
+        pushState({rootUrl: this.state.rootUrl, flag: this.state.flag}, true)
+      }
+
+      return rightState
+    }
+
+    getRealContent(cnt){
+      if (!cnt) return ' '
+      const InstanceContext = this.saxer.get().InstanceContext
+      const selectData = this.state.selectData
+      if (typeof cnt == 'function') {
+        let result = cnt(InstanceContext)
+        if (typeof result == 'object') {
+          if (result['$$typeof']) return result
+
+          // enter, leave, main, loaded
+          if (typeof result.enter == 'function') return result.enter(selectData)  
+          else if(typeof result.main == 'function') {
+            return result.main(selectData)
+          }
+        }
+      }
+      return cnt
+    }
+
+    getPage(boxCls){
+      const id = this.state.select
       let animatein = this.animatein
       let animateout = this.animateout
       let pre, preId, prePage, preContent
@@ -335,18 +332,17 @@ Aotoo.extend('tabs', function(opts, utile){
       }
 
       if (pre && pre.id !== id) {
-        this.prePageContent = pre
-        preContent = this.enterContent(pre.content)
-        prePage = <div key={_.uniqueId('Router_Mulitple_')} className={boxCls+animateout}>{preContent}</div>
+        this.prePage = pre
+        preContent = this.getRealContent(this.getContent(pre.id))
+        prePage = <div key={utile.uniqueId('Router_Single_')} className={boxCls+animateout}>{preContent}</div>
       }
 
-      const _content = this.getContent(id)
-      const content = this.enterContent(this.getContent(id))
-      const curPage = <div key={_.uniqueId('Router_Mulitple_')} className={boxCls+animatein}>{content}</div>
+      const content = this.getRealContent(this.getContent(id))
+      const curPage = <div key={utile.uniqueId('Router_Single_')} className={boxCls+animatein}>{content}</div>
 
       _leftStack.push({
         id: id,
-        content: _content
+        content: content
       })
 
       return [
@@ -355,8 +351,21 @@ Aotoo.extend('tabs', function(opts, utile){
       ]
     }
 
-  }
+    render(){
+      const cls = !this.props.routerClass ? 'routerGroup ' : 'routerGroup ' + this.props.routerClass
+      const boxes_cls = !this.props.mulitple ? 'routerBoxes' : 'routerBoxes mulitple'
 
+      const jsxMenu = this.saxer.get().MenuJsx
+      const content = this.getPage(boxes_cls)
+
+      return (
+        <div className={cls}>
+          { this.state.showMenu ? <div className='routerMenus'>{jsxMenu}</div> : '' }
+          {content}
+        </div>
+      )
+    }
+  }
 
   const Action = {
     UPDATE: function(ostate, opts, ctx){
@@ -388,13 +397,20 @@ Aotoo.extend('tabs', function(opts, utile){
     },
   }
 
+  // const router = Aotoo(Tabs, Action, dft)
   const router = Aotoo(Router, Action, dft)
+  
+  router.saxer.append({
+    InstanceContext: router
+  })
+
   router.extend({
     getWhereInfo: function(where){
       const menu_data = this.saxer.get().MenuData
       return utile.find(menu_data, {path: where})
     },
     goto: function(where, data){
+      if (typeof where != 'string') return 
       const target = this.getWhereInfo(where)
       this.$select({
         select: target.index,
@@ -404,6 +420,7 @@ Aotoo.extend('tabs', function(opts, utile){
     },
     back: function(where, data){
       if (where) {
+        if (typeof where != 'string') return 
         const target = this.getWhereInfo(where)
         this.$select({
           select: target.index,
@@ -429,14 +446,13 @@ Aotoo.extend('tabs', function(opts, utile){
             direction: 'back'
           })
           return whereBack
-
         } else {
           pushState({rootUrl: rootUrl}, true)
         }
       }
     }
   })
-
+  return router
 })
 
 
@@ -453,7 +469,7 @@ const WrapElement = Aotoo.wrap(
 
 const tabs = Aotoo.tabs({
   props: {
-    mulitple: true,         //默认为false ,为true时，组件里所有content都会显示
+    mulitple: false,         //默认为false ,为true时，组件里所有content都会显示
     // tabClass: 'tabs-nornal',
     // tabClass: 'tabs-floor-left',
     tabClass: 'tabs-nornal-top',

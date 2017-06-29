@@ -3860,8 +3860,8 @@ rc@^1.1.7:
     strip-json-comments "~2.0.1"
 
 react-combinex@^1.0.34:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/react-combinex/-/react-combinex-1.1.4.tgz#40957fa210eb6fb06eb2dddb04a97601edcbbec3"
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/react-combinex/-/react-combinex-1.1.5.tgz#e626dc04b38ae857a0e438b956260b2e0f58a83f"
   dependencies:
     babel-preset-stage-0 "^6.24.1"
     fkp-sax "^1.5.10"

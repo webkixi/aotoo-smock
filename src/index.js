@@ -173,19 +173,16 @@ Aotoo.extend('tabs', function(opts, utile){
       }
 
       contents.forEach( item => {
-        if (id&&item.path&&item.path == id) {
-          selectContent = item.content
-        } 
-        else if(id&&item.index == id) {
-          selectContent = item.content
-        } 
-        else {
+        if ( (id||id==0)) {
+          if (item.path == id || item.index == id) {
+            selectContent = item.content
+          }
+        } else {
           if (item.index == select) {
             selectContent = item.content
           }
         }
       })
-
       return selectContent
     }
 
@@ -330,13 +327,13 @@ Aotoo.extend('tabs', function(opts, utile){
       } else {
         pre = _leftStack.length ? _leftStack[_leftStack.length-1] : '';
       }
-
+      
       if (pre && pre.id !== id) {
         this.prePage = pre
         preContent = this.getRealContent(this.getContent(pre.id))
         prePage = <div key={utile.uniqueId('Router_Single_')} className={boxCls+animateout}>{preContent}</div>
       }
-
+      
       const content = this.getRealContent(this.getContent(id))
       const curPage = <div key={utile.uniqueId('Router_Single_')} className={boxCls+animatein}>{content}</div>
 
@@ -357,6 +354,7 @@ Aotoo.extend('tabs', function(opts, utile){
 
       const jsxMenu = this.saxer.get().MenuJsx
       const content = this.getPage(boxes_cls)
+      
 
       return (
         <div className={cls}>
@@ -452,6 +450,8 @@ Aotoo.extend('tabs', function(opts, utile){
       }
     }
   })
+
+  Popstate.on('goback', router.back)
   return router
 })
 
@@ -459,10 +459,10 @@ Aotoo.extend('tabs', function(opts, utile){
 const WrapElement = Aotoo.wrap(
   <div>这个真好吃</div>, {
     rendered: function(dom){
-      console.log('========= rendered');
+      // console.log('========= rendered');
     },
     leave: function(){
-      console.log('========= leave');
+      // console.log('========= leave');
     }
   }
 )
@@ -475,10 +475,16 @@ const tabs = Aotoo.tabs({
     tabClass: 'tabs-nornal-top',
     data: [
       // {title: 'aaa', content: '什么', idf: 'le1', itemClass: 'aabbcc'},
-      {title: 'aaa', content: '什么, what'},
-      {title: 'bbb', content: '来了'},
-      {title: 'ccc', content: <WrapElement />},
-    ]
+      {title: 'aaa', content: '什么, what', path: 'a1', attr:{path: 'a1'}},
+      {title: 'bbb', content: '来了', path: 'a2', attr:{path: 'a2'}},
+      {title: 'ccc', content: <WrapElement />, path: 'a3', attr:{path: 'a3'}},
+    ],
+    itemMethod: function(dom){
+      const _path = $(dom).attr('data-path')
+      $(dom).click(function(){
+        tabs.goto(_path)
+      })
+    }
   }
 })
 
@@ -508,4 +514,8 @@ tabs.render('test', function(dom){
     let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top - 50   // mlitple = false    50是tabsMenus的高度，tabClass: 'tabs-nornal-top',
     $("html,body").animate({scrollTop: target_top}, 500)  //适合于 mlitple = true与false，tabClass: 'tabs-nornal-top',
   })
+  
+  // $(dom).find('.routerMenus li:not(.itemroot)').click(function(){
+  //   tabs.goto('a2')
+  // })
 })

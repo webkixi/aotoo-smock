@@ -50,7 +50,6 @@ function prepaireData(state){
    *   {title, content, idf, parent, attr},
    * ]
    */
-  const that = this
   let menuData = []
   let contentData = []
   state.data.forEach( (item, ii) => {
@@ -172,7 +171,7 @@ Aotoo.extend('tabs', function(opts, utile){
 
     render(){
       const jsxMenu = this.saxer.get().MenuJsx
-      const content = this.getContent()
+      let content = this.getContent()
       if (typeof content == 'function') {
         content = content(this.state.selectData)
       }
@@ -253,7 +252,7 @@ const $ = require('jquery')
 //     $("html,body").animate({scrollTop: target_top}, 500)
 //   })
 // })
-tabs.render('tabs', function(dom){
+tabs.render('test', function(dom){
   $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
     let index = $(this).attr('data-treeid')
     let num = parseInt(index) + 1     // mlitple = false  ,tabClass: 'tabs-nornal-top',

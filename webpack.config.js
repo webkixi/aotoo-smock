@@ -36,7 +36,22 @@ module.exports = {
       },
       {
         test: /\.styl$/,
-        use: ['style-loader', 'css-loader', 'stylus-loader']
+        use: ['style-loader', 'css-loader', 'postcss-loader', 'stylus-loader']
+        // use: [
+        //   'style-loader', 
+        //   { 
+        //     loader: 'css-loader', 
+        //     options: { importLoaders: 1 } 
+        //   }, {
+        //     loader: 'postcss-loader',
+        //     options: {
+        //       config: {
+        //         path: 'path/to/postcss.config.js'
+        //       }
+        //     }
+        //   },
+        //   'stylus-loader'
+        // ]
         // use: ExtractTextPlugin.extract({
         //   fallback: "style-loader",
         //   publicPath: '/',

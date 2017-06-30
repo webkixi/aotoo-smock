@@ -104,10 +104,12 @@ Aotoo.extend('tabs', function(opts, utile){
       this.state = {
         data: this.props.data||[],
         select: this.props.select||0,
-        selectData: {}
+        selectData: {},
+        showMenu: this.props.showMenu||true,
       }
 
       this.createMenu = this.createMenu.bind(this)
+      this.getContent = this.getContent.bind(this)
     }
 
     componentWillMount() {
@@ -133,7 +135,7 @@ Aotoo.extend('tabs', function(opts, utile){
       })
     }
 
-    getContent(){
+    getContent(id){
       const select = this.state.select
       const contents = this.saxer.get().ContentData
       let _contents = []
@@ -154,8 +156,14 @@ Aotoo.extend('tabs', function(opts, utile){
       }
 
       contents.forEach( item => {
-        if (item.index == select) {
-          selectContent = item.content
+        if ( (id||id==0)) {
+          if (item.path == id || item.index == id) {
+            selectContent = item.content
+          }
+        } else {
+          if (item.index == select) {
+            selectContent = item.content
+          }
         }
       })
 
@@ -165,13 +173,16 @@ Aotoo.extend('tabs', function(opts, utile){
     render(){
       const jsxMenu = this.saxer.get().MenuJsx
       const content = this.getContent()
+      if (typeof content == 'function') {
+        content = content(this.state.selectData)
+      }
 
       const cls = !this.props.tabClass ? 'tabsGroup ' : 'tabsGroup ' + this.props.tabClass
       const boxes_cls = !this.props.mulitple ? 'tabsBoxes' : 'tabsBoxes mulitple'
 
       return (
         <div className={cls}>
-          <div className='tabsMenus'>{jsxMenu}</div>
+          { this.state.showMenu ? <div className='tabsMenus'>{jsxMenu}</div> : '' }
           <div className={boxes_cls}>{content}</div>
         </div>
       )

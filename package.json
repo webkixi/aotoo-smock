@@ -33,7 +33,7 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
     "webpack": "^3.0.0",
-    "webpack-dev-server": "^1.16.3"
+    "webpack-dev-server": "^2.5.0"
   },
   "dependencies": {
     "aotoo": "^1.2.8",

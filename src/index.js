@@ -13,7 +13,8 @@ const Popstate = SAX('Popstate');
       evt.preventDefault()
       evt.stopImmediatePropagation()
     } else {
-      Popstate.trigger()
+      Popstate.emit('goback')
+      // Popstate.trigger()
     }
   }, false)
 }())
@@ -213,9 +214,18 @@ Aotoo.extend('tabs', function(opts, utile){
       this.state = utile.merge(this.state, {
         flag: true,
         rootUrl: this.props.rootUrl || rootUrl,
-        direction: 'goto'
+        direction: 'goto',
+        animate: this.props.animate || 'right'
       })
       this.prePage
+
+      if (this.state.animate) {
+				const animateType = this.state.animate  // fade, left, right
+				this.animatein = animatecss[animateType]['in']
+				this.animaterein = animatecss[animateType]['rein']
+				this.animateout = animatecss[animateType]['out']
+				this.animateback = animatecss[animateType]['back']
+			}
 
       this.historyPush = this.historyPush.bind(this)
       this.getRealContent = this.getRealContent.bind(this)
@@ -224,13 +234,30 @@ Aotoo.extend('tabs', function(opts, utile){
     
     componentWillMount() {
       super.componentWillMount()
+      const that = this
       const menuData = this.saxer.get().MenuData
       const contentData = this.saxer.get().ContentData
       const selectItem = menuData[this.state.select]
+      
 
-      this.historyPush({
-        index: selectItem.index,
-        key: selectItem.path,
+      this.on('historypush', function(opts){
+        const _path = opts.path
+        const _data = opts.data
+        const historyItem = that.findPath(_path)
+
+        that.historyPush({
+          index: historyItem.index,
+          key: historyItem.path,
+          data: _data||{}
+        })
+      })
+
+      this.on('historypop', function(opts){
+        return that.historyPop(opts)
+      })
+
+      this.emit('historypush', {
+        path: this.state.select,
         data: {}
       })
     }
@@ -238,6 +265,9 @@ Aotoo.extend('tabs', function(opts, utile){
     findPath(where){
       const type = typeof where
       const menu_data = this.saxer.get().MenuData
+      if (type == 'number') {
+        return menu_data[where]
+      }
       if (type == 'string') {
         return utile.find(menu_data, {path: where})
       }
@@ -384,7 +414,14 @@ Aotoo.extend('tabs', function(opts, utile){
       }
 
       if (opts.direction) {
-        state.direction = opts.direction
+        state.direction = opts.direction || 'goto'
+      }
+
+      if (state.direction == 'goto') {
+        ctx.emit('historypush', {
+          path: state.select,
+          data: state.selectData
+        })
       }
       
       if (typeof opts.cb == 'function') {
@@ -400,6 +437,10 @@ Aotoo.extend('tabs', function(opts, utile){
   
   router.saxer.append({
     InstanceContext: router
+  })
+
+  Popstate.on('goback', function(){
+    return router.back()
   })
 
   router.extend({
@@ -426,7 +467,7 @@ Aotoo.extend('tabs', function(opts, utile){
           direction: 'back'
         })
       } else {
-        const whereBack = this.historyPop()
+        const whereBack = this.emit('historypop')
         // whereBack: {
           // index: props.index,
           // key: props.key,
@@ -436,7 +477,6 @@ Aotoo.extend('tabs', function(opts, utile){
           // timeLine: _historyCount,
           // flag: this.state.flag
         //}
-
         if (whereBack) {
           this.$select({
             select: whereBack.index,
@@ -451,7 +491,6 @@ Aotoo.extend('tabs', function(opts, utile){
     }
   })
 
-  Popstate.on('goback', router.back)
   return router
 })
 
@@ -469,6 +508,7 @@ const WrapElement = Aotoo.wrap(
 
 const tabs = Aotoo.tabs({
   props: {
+    
     mulitple: false,         //默认为false ,为true时，组件里所有content都会显示
     // tabClass: 'tabs-nornal',
     // tabClass: 'tabs-floor-left',

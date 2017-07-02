@@ -1,7 +1,3 @@
-import at from './aotoo'
-
-
-
 const Popstate = SAX('Popstate');
 (function() {
   var blockPopstateEvent = document.readyState != "complete";
@@ -13,7 +9,8 @@ const Popstate = SAX('Popstate');
       evt.preventDefault()
       evt.stopImmediatePropagation()
     } else {
-      Popstate.trigger()
+      Popstate.emit('goback')
+      // Popstate.trigger()
     }
   }, false)
 }())
@@ -51,25 +48,23 @@ const animatecss = {
 }
 
 
-
-
-
-
-
-
-
+/**
+ * [
+ *   {title, content, idf, parent, attr, path},
+ *   {title, content, idf, parent, attr, path},
+ * ]
+ */
 function prepaireData(state){
-  /**
-   * [
-   *   {title, content, idf, parent, attr, path},
-   *   {title, content, idf, parent, attr, path},
-   * ]
-   */
   const that = this
+  const props = this.props
+  const propsItemClass = props.itemClass ? props.itemClass + ' ' : ''
   let menuData = []
   let contentData = []
   state.data.forEach( (item, ii) => {
-    const itemCls = ii == state.select ? item.itemClass ? item.itemClass+' select' : 'select' : ''
+    const itemCls = ii == state.select 
+      ? item.itemClass ? propsItemClass+item.itemClass+' select' : propsItemClass+'select' 
+      : item.itemClass ? propsItemClass+item.itemClass : propsItemClass
+    
     // 准备菜单数据
     menuData.push({
       index: ii,
@@ -102,12 +97,12 @@ function prepaireData(state){
 
 
 
-require('./tabs.styl')
-Aotoo.extend('tabs', function(opts, utile){
+require('./router.styl')
+Aotoo.extend('router', function(opts, utile){
 
   let dft = {
     props: {
-      tabClass: 'tabsGroupX',
+      routerClass: 'routerGroup',
       mulitple: false
     }
   }
@@ -213,9 +208,18 @@ Aotoo.extend('tabs', function(opts, utile){
       this.state = utile.merge(this.state, {
         flag: true,
         rootUrl: this.props.rootUrl || rootUrl,
-        direction: 'goto'
+        direction: 'goto',
+        animate: this.props.animate || 'right'
       })
-      this.prePage
+      this.prePageInfo
+
+      if (this.state.animate) {
+				const animateType = this.state.animate  // fade, left, right
+				this.animatein = animatecss[animateType]['in']
+				this.animaterein = animatecss[animateType]['rein']
+				this.animateout = animatecss[animateType]['out']
+				this.animateback = animatecss[animateType]['back']
+			}
 
       this.historyPush = this.historyPush.bind(this)
       this.getRealContent = this.getRealContent.bind(this)
@@ -224,13 +228,30 @@ Aotoo.extend('tabs', function(opts, utile){
     
     componentWillMount() {
       super.componentWillMount()
+      const that = this
       const menuData = this.saxer.get().MenuData
       const contentData = this.saxer.get().ContentData
       const selectItem = menuData[this.state.select]
+      
 
-      this.historyPush({
-        index: selectItem.index,
-        key: selectItem.path,
+      this.on('historypush', function(opts){
+        const _path = opts.path
+        const _data = opts.data
+        const historyItem = that.findPath(_path)
+
+        that.historyPush({
+          index: historyItem.index,
+          key: historyItem.path,
+          data: _data||{}
+        })
+      })
+
+      this.on('historypop', function(opts){
+        return that.historyPop(opts)
+      })
+
+      this.emit('historypush', {
+        path: this.state.select,
         data: {}
       })
     }
@@ -238,6 +259,9 @@ Aotoo.extend('tabs', function(opts, utile){
     findPath(where){
       const type = typeof where
       const menu_data = this.saxer.get().MenuData
+      if (type == 'number') {
+        return menu_data[where]
+      }
       if (type == 'string') {
         return utile.find(menu_data, {path: where})
       }
@@ -329,17 +353,19 @@ Aotoo.extend('tabs', function(opts, utile){
       }
       
       if (pre && pre.id !== id) {
-        this.prePage = pre
+        this.prePageInfo = pre
         preContent = this.getRealContent(this.getContent(pre.id))
         prePage = <div key={utile.uniqueId('Router_Single_')} className={boxCls+animateout}>{preContent}</div>
       }
       
-      const content = this.getRealContent(this.getContent(id))
+      const oriContent = this.getContent(id)
+      const content = this.getRealContent(oriContent)
       const curPage = <div key={utile.uniqueId('Router_Single_')} className={boxCls+animatein}>{content}</div>
 
       _leftStack.push({
         id: id,
-        content: content
+        content: content,
+        origin: oriContent
       })
 
       return [
@@ -348,13 +374,35 @@ Aotoo.extend('tabs', function(opts, utile){
       ]
     }
 
+    leaveContent(){
+      if (this.prePageInfo) {
+        const InstanceContext = this.saxer.get().InstanceContext
+        const _pre = this.prePageInfo.origin
+        if (typeof _pre == 'function') {
+          let result = _pre(InstanceContext)
+          if (typeof result == 'object') {
+            if (typeof result.leave == 'function') return result.leave()  
+          }
+        }
+      }
+    }
+
+    componentDidMount() {
+      console.log('======= 111');
+      this.leaveContent()
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+      console.log('========== 222');
+      this.leaveContent()
+    }
+
     render(){
       const cls = !this.props.routerClass ? 'routerGroup ' : 'routerGroup ' + this.props.routerClass
       const boxes_cls = !this.props.mulitple ? 'routerBoxes' : 'routerBoxes mulitple'
 
       const jsxMenu = this.saxer.get().MenuJsx
       const content = this.getPage(boxes_cls)
-      
 
       return (
         <div className={cls}>
@@ -384,7 +432,14 @@ Aotoo.extend('tabs', function(opts, utile){
       }
 
       if (opts.direction) {
-        state.direction = opts.direction
+        state.direction = opts.direction || 'goto'
+      }
+
+      if (state.direction == 'goto') {
+        ctx.emit('historypush', {
+          path: state.select,
+          data: state.selectData
+        })
       }
       
       if (typeof opts.cb == 'function') {
@@ -400,6 +455,10 @@ Aotoo.extend('tabs', function(opts, utile){
   
   router.saxer.append({
     InstanceContext: router
+  })
+
+  Popstate.on('goback', function(){
+    return router.back()
   })
 
   router.extend({
@@ -426,7 +485,7 @@ Aotoo.extend('tabs', function(opts, utile){
           direction: 'back'
         })
       } else {
-        const whereBack = this.historyPop()
+        const whereBack = this.emit('historypop')
         // whereBack: {
           // index: props.index,
           // key: props.key,
@@ -436,7 +495,6 @@ Aotoo.extend('tabs', function(opts, utile){
           // timeLine: _historyCount,
           // flag: this.state.flag
         //}
-
         if (whereBack) {
           this.$select({
             select: whereBack.index,
@@ -451,71 +509,5 @@ Aotoo.extend('tabs', function(opts, utile){
     }
   })
 
-  Popstate.on('goback', router.back)
   return router
-})
-
-
-const WrapElement = Aotoo.wrap(
-  <div>这个真好吃</div>, {
-    rendered: function(dom){
-      // console.log('========= rendered');
-    },
-    leave: function(){
-      // console.log('========= leave');
-    }
-  }
-)
-
-const tabs = Aotoo.tabs({
-  props: {
-    mulitple: false,         //默认为false ,为true时，组件里所有content都会显示
-    // tabClass: 'tabs-nornal',
-    // tabClass: 'tabs-floor-left',
-    tabClass: 'tabs-nornal-top',
-    data: [
-      // {title: 'aaa', content: '什么', idf: 'le1', itemClass: 'aabbcc'},
-      {title: 'aaa', content: '什么, what', path: 'a1', attr:{path: 'a1'}},
-      {title: 'bbb', content: '来了', path: 'a2', attr:{path: 'a2'}},
-      {title: 'ccc', content: <WrapElement />, path: 'a3', attr:{path: 'a3'}},
-    ],
-    itemMethod: function(dom){
-      const _path = $(dom).attr('data-path')
-      $(dom).click(function(){
-        tabs.goto(_path)
-      })
-    }
-  }
-})
-
-
-const $ = require('jquery')
-// //用于tabs-floor-left
-// tabs.render('test', function(dom){
-//   $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
-//     let index = $(this).attr('data-treeid')
-//     let num = parseInt(index) + 1
-//     tabs.$select({
-//       select: index
-//     })
-//     let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top
-//     $("html,body").animate({scrollTop: target_top}, 500)
-//   })
-// })
-tabs.render('test', function(dom){
-  $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
-    let index = $(this).attr('data-treeid')
-    let num = parseInt(index) + 1     // mlitple = false  ,tabClass: 'tabs-nornal-top',
-    tabs.$select({
-      select: index,
-      cb: function(){ }
-    })
-    // let target_top = $(this).parents('.tabsMenus').next('.tabsBoxes').offset().top     //适合于 mlitple = true，tabClass: 'tabs-nornal-top',
-    let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top - 50   // mlitple = false    50是tabsMenus的高度，tabClass: 'tabs-nornal-top',
-    $("html,body").animate({scrollTop: target_top}, 500)  //适合于 mlitple = true与false，tabClass: 'tabs-nornal-top',
-  })
-  
-  // $(dom).find('.routerMenus li:not(.itemroot)').click(function(){
-  //   tabs.goto('a2')
-  // })
 })

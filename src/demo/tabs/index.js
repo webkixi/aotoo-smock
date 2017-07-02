@@ -1,62 +1,29 @@
 import at from './aotoo'
-
-// class Test extends React.Component {
-//   constructor(props){
-//     super(props)
-//     this.state = {
-//       test: '123'
-//     }
-//     this.handlClick = this::this.handlClick
-//   }
-
-//   componentWillMount() {
-//     console.log('======== 111222333');
-//   }
-
-//   componentWillUpdate(nextProps, nextState){
-//     console.log(nextProps, nextState);
-//   }
-
-//   handlClick(){
-//     this.setState({
-//       test: '456'
-//     })
-//   }
-
-//   render(){
-//     return (
-//       <div>
-//         {this.state.test}
-//         <button onClick={this.handlClick}>click</button>
-//       </div>
-//     )
-//   }
-// }
-
-// Aotoo.render(<Test />, 'test')
+require('./tabs.styl')
 
 
-
-
-
-
-
-
-
+/**
+ * [
+ *   {title, content, idf, parent, attr, path},
+ *   {title, content, idf, parent, attr, path},
+ * ]
+ */
 function prepaireData(state){
-  /**
-   * [
-   *   {title, content, idf, parent, attr},
-   *   {title, content, idf, parent, attr},
-   * ]
-   */
+  const that = this
+  const props = this.props
+  const propsItemClass = props.itemClass ? props.itemClass + ' ' : ''
   let menuData = []
   let contentData = []
   state.data.forEach( (item, ii) => {
-    const itemCls = ii == state.select ? item.itemClass ? item.itemClass+' select' : 'select' : ''
+    // console.log(item);
+    const itemCls = ii == state.select 
+      ? item.itemClass ? propsItemClass+item.itemClass+' select' : propsItemClass+'select' 
+      : item.itemClass ? propsItemClass+item.itemClass : propsItemClass
+    
     // 准备菜单数据
     menuData.push({
       index: ii,
+      path: item.path,
       title: item.title,
       idf: item.idf,
       parent: item.parent,
@@ -68,6 +35,7 @@ function prepaireData(state){
     // 准备内容数据
     contentData.push({
       index: ii,
+      path: item.path,
       idf: item.idf,
       content: item.content
     })
@@ -81,10 +49,6 @@ function prepaireData(state){
   this.createMenu()
 }
 
-
-
-
-require('./tabs.styl')
 Aotoo.extend('tabs', function(opts, utile){
 
   let dft = {
@@ -145,7 +109,7 @@ Aotoo.extend('tabs', function(opts, utile){
           if (!item.idf) {
             _contents.push({
               title: item.content,
-              itemClass: item.index == select ? 'select' : ''
+              itemClass: (id&&item.path&&item.path == id) ? 'select' : item.index == id ? 'select' : item.index == select ? 'select' : ''
             })
           }
         })
@@ -165,7 +129,6 @@ Aotoo.extend('tabs', function(opts, utile){
           }
         }
       })
-
       return selectContent
     }
 
@@ -223,45 +186,56 @@ const WrapElement = Aotoo.wrap(
   }
 )
 
-const tabs = Aotoo.tabs({
-  props: {
-    mulitple: true,         //默认为false ,为true时，组件里所有content都会显示
-    // tabClass: 'tabs-nornal',
-    // tabClass: 'tabs-floor-left',
-    tabClass: 'tabs-nornal-top',
-    data: [
-      // {title: 'aaa', content: '什么', idf: 'le1', itemClass: 'aabbcc'},
-      {title: 'aaa', content: '什么, what'},
-      {title: 'bbb', content: '来了'},
-      {title: 'ccc', content: <WrapElement />},
-    ]
+function mkTabs(opts){
+  const dft = {
+    props: {
+      mulitple: false,
+      data: [],
+      tabClass: 'tabs-nornal-top'
+    }
   }
-})
+  // if (){}
+}
+
+// const tabs = Aotoo.tabs({
+//   props: {
+//     mulitple: true,         //默认为false ,为true时，组件里所有content都会显示
+//     // tabClass: 'tabs-nornal',
+//     // tabClass: 'tabs-floor-left',
+//     tabClass: 'tabs-nornal-top',
+//     data: [
+//       // {title: 'aaa', content: '什么', idf: 'le1', itemClass: 'aabbcc'},
+//       {title: 'aaa', content: '什么, what'},
+//       {title: 'bbb', content: '来了'},
+//       {title: 'ccc', content: <WrapElement />},
+//     ]
+//   }
+// })
 
 
-const $ = require('jquery')
-// //用于tabs-floor-left
+// const $ = require('jquery')
+// // //用于tabs-floor-left
+// // tabs.render('test', function(dom){
+// //   $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
+// //     let index = $(this).attr('data-treeid')
+// //     let num = parseInt(index) + 1
+// //     tabs.$select({
+// //       select: index
+// //     })
+// //     let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top
+// //     $("html,body").animate({scrollTop: target_top}, 500)
+// //   })
+// // })
 // tabs.render('test', function(dom){
 //   $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
 //     let index = $(this).attr('data-treeid')
-//     let num = parseInt(index) + 1
+//     let num = parseInt(index) + 1     // mlitple = false  ,tabClass: 'tabs-nornal-top',
 //     tabs.$select({
-//       select: index
+//       select: index,
+//       cb: function(){ }
 //     })
-//     let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top
-//     $("html,body").animate({scrollTop: target_top}, 500)
+//     // let target_top = $(this).parents('.tabsMenus').next('.tabsBoxes').offset().top     //适合于 mlitple = true，tabClass: 'tabs-nornal-top',
+//     let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top - 50   // mlitple = false    50是tabsMenus的高度，tabClass: 'tabs-nornal-top',
+//     $("html,body").animate({scrollTop: target_top}, 500)  //适合于 mlitple = true与false，tabClass: 'tabs-nornal-top',
 //   })
 // })
-tabs.render('test', function(dom){
-  $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
-    let index = $(this).attr('data-treeid')
-    let num = parseInt(index) + 1     // mlitple = false  ,tabClass: 'tabs-nornal-top',
-    tabs.$select({
-      select: index,
-      cb: function(){ }
-    })
-    // let target_top = $(this).parents('.tabsMenus').next('.tabsBoxes').offset().top     //适合于 mlitple = true，tabClass: 'tabs-nornal-top',
-    let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top - 50   // mlitple = false    50是tabsMenus的高度，tabClass: 'tabs-nornal-top',
-    $("html,body").animate({scrollTop: target_top}, 500)  //适合于 mlitple = true与false，tabClass: 'tabs-nornal-top',
-  })
-})

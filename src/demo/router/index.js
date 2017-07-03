@@ -66,7 +66,7 @@ Aotoo.extend('router', function(opts, utile){
       super(props)
       this.state = {
         data: this.props.data||[],
-        select: this.props.select||0,
+        select: this.props.select||this.props.start||0,
         selectData: {},
         showMenu: this.props.showMenu||true,
       }
@@ -467,6 +467,9 @@ Aotoo.extend('router', function(opts, utile){
     getWhereInfo: function(where){
       const menu_data = this.saxer.get().MenuData
       return utile.find(menu_data, {path: where})
+    },
+    start: function(id, data){
+      this.goto(id, data)
     },
     goto: function(where, data){
       if (typeof where != 'string') return 

@@ -9,7 +9,8 @@ const WrapElement = Aotoo.wrap(
   }
 )
 
-const forLeave = function(){
+const forLeave = function(rter){
+  console.log(rter);
   return {
     main: function(){
       return <div>来了, forLeave</div>

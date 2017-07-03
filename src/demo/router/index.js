@@ -1,3 +1,5 @@
+require('./router.styl')
+require('aotoo-mixins-iscroll')
 const Popstate = SAX('Popstate');
 (function() {
   var blockPopstateEvent = document.readyState != "complete";
@@ -47,57 +49,6 @@ const animatecss = {
 	}
 }
 
-
-/**
- * [
- *   {title, content, idf, parent, attr, path},
- *   {title, content, idf, parent, attr, path},
- * ]
- */
-function prepaireData(state){
-  const that = this
-  const props = this.props
-  const propsItemClass = props.itemClass ? props.itemClass + ' ' : ''
-  let menuData = []
-  let contentData = []
-  state.data.forEach( (item, ii) => {
-    const itemCls = ii == state.select 
-      ? item.itemClass ? propsItemClass+item.itemClass+' select' : propsItemClass+'select' 
-      : item.itemClass ? propsItemClass+item.itemClass : propsItemClass
-    
-    // 准备菜单数据
-    menuData.push({
-      index: ii,
-      path: item.path,
-      title: item.title,
-      idf: item.idf,
-      parent: item.parent,
-      attr: item.attr,
-      itemClass: itemCls,
-      itemMethod: item.itemMethod
-    })
-
-    // 准备内容数据
-    contentData.push({
-      index: ii,
-      path: item.path,
-      idf: item.idf,
-      content: item.content
-    })
-  })
-
-  this.saxer.append({
-    MenuData: menuData,
-    ContentData: contentData
-  })
-
-  this.createMenu()
-}
-
-
-
-
-require('./router.styl')
 Aotoo.extend('router', function(opts, utile){
 
   let dft = {
@@ -120,16 +71,65 @@ Aotoo.extend('router', function(opts, utile){
         showMenu: this.props.showMenu||true,
       }
 
+      this.prepaireData = this.prepaireData.bind(this)
       this.createMenu = this.createMenu.bind(this)
       this.getContent = this.getContent.bind(this)
     }
 
     componentWillMount() {
-      prepaireData.call(this, this.state)
+      // prepaireData.call(this, this.state)
+      this.prepaireData(this.state)
     }
 
     componentWillUpdate(nextProps, nextState){
-      prepaireData.call(this, nextState)
+      // prepaireData.call(this, nextState)
+      this.prepaireData(nextState)
+    }
+
+    /**
+     * [
+     *   {title, content, idf, parent, attr, path},
+     *   {title, content, idf, parent, attr, path},
+     * ]
+     */
+    prepaireData(state){
+      const that = this
+      const props = this.props
+      const propsItemClass = props.itemClass ? props.itemClass + ' ' : ''
+      let menuData = []
+      let contentData = []
+      state.data.forEach( (item, ii) => {
+        const itemCls = ii == state.select 
+          ? item.itemClass ? propsItemClass+item.itemClass+' select' : propsItemClass+'select' 
+          : item.itemClass ? propsItemClass+item.itemClass : propsItemClass
+        
+        // 准备菜单数据
+        menuData.push({
+          index: ii,
+          path: item.path,
+          title: item.title,
+          idf: item.idf,
+          parent: item.parent,
+          attr: item.attr,
+          itemClass: itemCls,
+          itemMethod: item.itemMethod
+        })
+
+        // 准备内容数据
+        contentData.push({
+          index: ii,
+          path: item.path,
+          idf: item.idf,
+          content: item.content
+        })
+      })
+
+      this.saxer.append({
+        MenuData: menuData,
+        ContentData: contentData
+      })
+
+      this.createMenu()
     }
 
     createMenu(){
@@ -388,12 +388,10 @@ Aotoo.extend('router', function(opts, utile){
     }
 
     componentDidMount() {
-      console.log('======= 111');
       this.leaveContent()
     }
 
     componentDidUpdate(prevProps, prevState) {
-      console.log('========== 222');
       this.leaveContent()
     }
 
@@ -403,10 +401,14 @@ Aotoo.extend('router', function(opts, utile){
 
       const jsxMenu = this.saxer.get().MenuJsx
       const content = this.getPage(boxes_cls)
+      const IscrollTreeMenu = Aotoo.iscroll(<div className='routerMenus'>{jsxMenu}</div>, {
+        onscroll: function(){},
+        onscrollend: function(){}
+      })
 
       return (
         <div className={cls}>
-          { this.state.showMenu ? <div className='routerMenus'>{jsxMenu}</div> : '' }
+          { this.state.showMenu ? <IscrollTreeMenu /> : '' }
           {content}
         </div>
       )

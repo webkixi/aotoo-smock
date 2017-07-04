@@ -1,100 +1,173 @@
-*
-  margin: 0
-  padding: 0
-li
-  list-style-type: none;
+@import "../../css/_common"
+@import "../../css/animate"
 
-display-flex($flex-flow = row nowrap, $justify-content = flex-start, $align-items = initial, $align-content = initial)
-  @media screen and (min-device-width: 380px)
-    display: flex
-    flex-flow: $flex-flow
-    justify-content: $justify-content
-    align-items: $align-items
-    align-content: $align-content
-  @media screen\0
-    font-size: 0
-    li,>*
-      display: inline-block;
-
-tabs-menu-body($height = 50px,$fontSize = 16px, $bb-li = none, $bl-li = none,  $ml-li = 0, $flex-li= auto, $li-hover = false)
-  display-flex(row, flex-start, center,center)
-  height: $height
-  text-align: center;
-  font-size: $fontSize
-  li
-    border-left: $bl-li
-    cursor: pointer;
-    position: relative;
-    margin-left: $ml-li
-    line-height: @height
-    flex: $flex-li
-    &:first-child
-      border-left: 0
-      margin-left: 0
-    &:after
-      border-bottom: $bb-li
-      content: ''
-      position: absolute;
-      bottom: 0
-      left: 0;
-      width: 100%;
-    &.select
-      &:after
-        border-bottom-color: #999999
-  if $li-hover
-    li
-      &:hover
-        &:after
-          border-bottom-color: #000
-
-position-fixed($top =0, $left = 0, $right= initial, $bottom = initial)
-  position: fixed;
+after($right = 10px, $top = initial, $bottom = initial, $left = initial)
+  position: absolute;
   top: $top
-  left: $left
   right: $right
   bottom: $bottom
-  width: 100%;
+  left: $left
 
+before($left = 0, $top = 0)
+  position: absolute;
+  top: $top
+  left: $left
 
-.tabs-nornal
-  border: 1px solid #e3e3e3
-  width: 90%
-  margin: auto
-  .tabsMenus
-    ul
-      tabs-menu-body(50px, 16px, 1px solid #e3e3e3 , 1px solid #e3e3e3, 0, 1)
-  .tabsBoxes
-    min-height: 200px
-
-//类似楼层 left
-.tabs-floor-left
-  padding-left: 200px
-  .tabsMenus
-    border-right: 1px solid #e3e3e3;
-    width: @padding-left
-    position-fixed()
+//第一级的左边是否需要icon
+routerMenusThemeIcon($icon-left = 4px)
+  .itemCategory
+    width: 100%
+  >ul>li
+    display-flex(row, flex-start, flex-start)
+    &:before
+      content: '*'
+      // before($icon-left)
+      margin-right: 6px
+//router theme配置
+routerMenusTheme($background = #fff, $color= $color333, $color2 = $color666, $li-line-height = 34px, $li-icon = '>', $li-icon-select = '<', $li-icon-right = 4px, $li-select-color = #108ee9, $li-select-background = #ecf6fd, $li-select-border-right = none)
+  background: $background
+  li
+    line-height: $li-line-height
+    color: $color
+    .caption
+      &:after
+        content: $li-icon
+        after($li-icon-right)
     li
-      border-bottom: @border-right
-      height: 40px
-      line-height: @height
-      text-align: center;
+      color: $color2
+    .itemrootCkb
+      &:checked
+        +.caption
+          &:after
+            content: $li-icon-select
+          +ul
+            display: block;
+    &:not(.itemroot)
       &.select,&:hover
-        color: #f5ab04
-  .tabsBoxes
-    min-height: 2000px
-    >ul>li
-      min-height: 500px
+        color: $li-select-color
+        background-color: $li-select-background
+        &:after
+          content: ''
+          // border-left: $li-select-border-left
+          border-right: $li-select-border-right
+          height: @line-height
+          after(0)
 
-//类似楼层 top
-.tabs-nornal-top
-  .tabsMenus
-    position-fixed()
+routerMenusLeft($width =  200px, $line-height = 34px, $padding-left = 4px, $font-size = 16px)
+  position-fixed()
+  width: $width
+  height: 100%
+  border-right: 1px solid #e3e3e3
+  li
+    position: relative;
+    .itemCategory
+      position: relative;
+    .caption
+      display: block;
+  >ul>li
+    line-height: $line-height
+    font-size: $font-size
+    padding-left: $padding-left
+    li
+      cursor: pointer;
+      // line-height: @line-height - 4
+      font-size: @font-size - 2
+      margin-left: -3.8em
+      padding-left: -(@margin-left) + 1
+
+
+routerMenusPcAndMob($width =  200px, $line-height = 34px, $padding-left = 4px, $font-size = 16, $rowway = false)
+  position-fixed()
+  if $rowway == true
+    width: $width
+    .list-wrap
+      display-flex(row, space-between, center)
+      border-bottom: 1px solid #e3e3e3
+      >ul>li ul
+        display: none
     ul
-      background: #fff
-      tabs-menu-body(40px, 16px, 1px solid #e3e3e3,1px solid #e3e3e3, 0, 1, true)
-  .tabsBoxes
-    padding-top: 50px
-    width: 100%;
-    min-height: 2000px
-    >ul>li
-      min-height: 500px
+      row-list(10px, flex-start)
+  else
+    height: 100%
+    li
+      position: relative;
+      cursor: pointer
+      .itemCategory
+        position: relative;
+      .caption
+        display: block;
+    .list-wrap
+      width: $width
+      margin: 0 auto
+      >ul>li
+        line-height: $line-height
+        font-size: $font-size
+        // padding-left: $padding-left
+        color: #595757
+        &:not(.level1)
+          border-bottom: 1px solid #e3e3e3
+
+        // abc(true, false)
+        // abc()
+        // if abc
+        //   li
+        //     background: #000
+        for i in 1..6
+          .level{i}
+            .caption
+              padding-left: 0.5rem * i
+              // +ul
+              //   background: #000
+            // &:not(span)
+            //   >ul
+            //    background-color: #000
+        .caption
+          border-bottom: 1px solid #e3e3e3
+          // &:before
+          //   content: ''
+          //   after(initial, initial, 0 , 0)
+          //   border-bottom: 1px solid #e3e3e3
+          //   width: 100%
+        // li
+        //   .caption
+        //     padding-left: @font-size
+        // ul
+        //   display: none
+        li
+          line-height: @line-height - 4
+          font-size: @font-size - 0.1
+          color: $color666
+          // margin-left: - @font-size
+          // padding-left: -(@margin-left) + 0.4
+
+
+routerBoxes()
+  overflow-y: auto;
+  min-height: 600px
+
+.router-basic
+  padding-left: 200px
+  .routerMenus
+    .itemrootCkb
+      after()
+      height: 34px
+      cursor: pointer;
+      opacity: 0;
+      width: 100%;
+
+    // routerMenusPcAndMob(86%, 46px, 8px, 0.5rem, false)
+    routerMenusThemeIcon(4px)
+    // routerMenusTheme(#2c3144, #8aa4af, #8aa4af, 44px, '>', '<', 8px, #fff, #212735, 3px solid #3c8dbc)
+    routerMenusTheme(#fff, $color333, $color666, 34px, '>', '<', 4px,  #108ee9, #ecf6fd, 3px solid #108ee9)
+    routerMenusLeft(@padding-left, 34px, 8px, 16px)
+    // routerMenus(100%, 44px, 8px, 16px, true)
+
+
+  .routerBoxes
+    routerBoxes()
+    margin: 10px
+  .contentHide
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -2;

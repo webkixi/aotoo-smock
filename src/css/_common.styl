@@ -1,11 +1,14 @@
 *
   margin: 0
   padding: 0
+body
+  // font-family: "SF Pro Text","Myriad Set Pro","SF Pro Icons","Helvetica Neue","Helvetica","Arial",sans-serif;
+  font-family: "Microsoft YaHei", "Helvetica Neue", Arial, Helvetica, sans-serif;
 li
   list-style-type: none;
 
 display-flex($flex-flow = row nowrap, $justify-content = flex-start, $align-items = initial, $align-content = initial)
-  @media screen and (min-device-width: 380px)
+  @media screen and (min-device-width: 320px)
     display: flex
     flex-flow: $flex-flow
     justify-content: $justify-content
@@ -15,6 +18,13 @@ display-flex($flex-flow = row nowrap, $justify-content = flex-start, $align-item
     font-size: 0
     li,>*
       display: inline-block;
+
+row-list($marginLeft= 6px, $justify-content = flex-start, $align-items = initial, $marginBottom = 0)
+  display-flex(row wrap,$justify-content,$align-items,center)
+  margin-left: - $marginLeft
+  >li,>div
+    margin-left: $marginLeft
+    margin-bottom: $marginBottom
 
 tabs-menu-body($height = 50px,$fontSize = 16px, $bb-li = none, $bl-li = none,  $ml-li = 0, $flex-li= auto, $li-hover = false)
   display-flex(row, flex-start, center,center)
@@ -55,46 +65,20 @@ position-fixed($top =0, $left = 0, $right= initial, $bottom = initial)
   bottom: $bottom
   width: 100%;
 
+// iconfont()
+//   +cache()
+//     font-family:"iconfont" !important
+//     font-style:normal
+//     -webkit-font-smoothing: antialiased
+//     -webkit-text-stroke-width: 0.2px
+//     -moz-osx-font-smoothing: grayscale
+//     // font-size: 16px
+// content(n)
+//   iconfont()
+//   content: n
 
-.tabs-nornal
-  border: 1px solid #e3e3e3
-  width: 90%
-  margin: auto
-  .tabsMenus
-    ul
-      tabs-menu-body(50px, 16px, 1px solid #e3e3e3 , 1px solid #e3e3e3, 0, 1)
-  .tabsBoxes
-    min-height: 200px
-
-//类似楼层 left
-.tabs-floor-left
-  padding-left: 200px
-  .tabsMenus
-    border-right: 1px solid #e3e3e3;
-    width: @padding-left
-    position-fixed()
-    li
-      border-bottom: @border-right
-      height: 40px
-      line-height: @height
-      text-align: center;
-      &.select,&:hover
-        color: #f5ab04
-  .tabsBoxes
-    min-height: 2000px
-    >ul>li
-      min-height: 500px
-
-//类似楼层 top
-.tabs-nornal-top
-  .tabsMenus
-    position-fixed()
-    ul
-      background: #fff
-      tabs-menu-body(40px, 16px, 1px solid #e3e3e3,1px solid #e3e3e3, 0, 1, true)
-  .tabsBoxes
-    padding-top: 50px
-    width: 100%;
-    min-height: 2000px
-    >ul>li
-      min-height: 500px
+$size14 =  14px
+$color000 = #000
+$color333 = #333
+$color666 = #666
+$color999 = #999

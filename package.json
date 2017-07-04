@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "aotoo": "^1.2.9",
-    "aotoo-mixins-iscroll": "^1.0.2",
+    "aotoo-mixins-iscroll": "^1.0.4",
     "aotoo-mixins-scroll": "^1.0.1",
     "aotoo-react-treex": "^1.0.4",
     "ejs": "^2.5.6",

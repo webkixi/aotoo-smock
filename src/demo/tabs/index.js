@@ -66,21 +66,23 @@ Aotoo.extend('tabs', function(opts, utile){
       super(props)
       this.state = {
         data: this.props.data||[],
-        select: this.props.select||0,
+        select: this.props.select||this.props.start||0,
         selectData: {},
         showMenu: this.props.showMenu||true,
       }
 
+      this.prepaireData = this.prepaireData.bind(this)
       this.createMenu = this.createMenu.bind(this)
       this.getContent = this.getContent.bind(this)
     }
 
     componentWillMount() {
-      prepaireData.call(this, this.state)
+      this.prepaireData(this.state)
     }
 
     componentWillUpdate(nextProps, nextState){
-      prepaireData.call(this, nextState)
+      this.prepaireData(nextState)
+
     }
 
     createMenu(){

@@ -26,28 +26,31 @@ const forLeave = function(rter){
 
 const router = Aotoo.router({
   props: {
+    animate: 'fade',
     data: [
-      // {title: 'aaa', content: '什么', idf: 'le1', itemClass: 'aabbcc'},
-      {title: 'aaa', content: '什么, what', path: 'a1', attr:{path: 'a1'}, idf: 'aa1'},
-      {title: 'aaa1', content: '什么1', path: 'a-1', attr:{path: 'a1'}, idf: 'aa2', parent: 'aa1'},
-      {title: 'aaa2', content: '什么2', path: 'a-2', attr:{path: 'a1'}, idf: 'aa3', parent: 'aa2'},
-      {title: 'aaa3', content: '什么3', path: 'a-3', attr:{path: 'a1'}, itemClass: 'yyy',             parent: 'aa3'},
-      {title: 'aaa4', content: '什么4', path: 'a-4', attr:{path: 'a1'}, itemClass: 'yyy',             parent: 'aa3'},
-      {title: 'bbb', content: forLeave, path: 'a2', attr:{path: 'a2'}},
-      {title: 'ccc', content: <WrapElement />, path: 'a3', attr:{path: 'a3'}, itemClass: 'yyy'},
+      {title: '我是一级', idf: 'aa1'},
+      {title: '我是二级', idf: 'aa2', parent: 'aa1'},
+      {title: '我是三级', idf: 'aa3', parent: 'aa2'},
+      {title: '我是四级A', content: '什么3', path: 'a4', attr:{path: 'a4'}, parent: 'aa3'},
+      {title: '我是四级B', content: '什sssssss么4', path: 'a5', attr:{path: 'a5'}, parent: 'aa3'},
+      {title: '我是一级B', content: forLeave, path: 'a2', attr:{path: 'a2'}},
+      {title: '我是一级C', content: <WrapElement />, path: 'a3', attr:{path: 'a3'}, itemClass: 'yyy'},
     ],
     itemClass: 'nihao',
-    routerClass: 'tabs-nornal-top',
+    routerClass: 'router-basic',
+    // treeHeader: <div><a href="#"><img src="http://pic.c-ctrip.com/common/c_logo2013.png" /></a></div>,
+    // treeFooter: <div className='xx'>你个妹妹</div>,
     itemMethod: function(dom){
-      if ($(dom).hasClass('itemroot')) {
-        const item = $(dom).find("li.nihao:not(.itemroot)")
-        const _path = $(item).attr('data-path')
-        $(item).click(function(){
+      if($(dom).hasClass('itemroot')) {
+        $(dom).find("li.nihao:not(.itemroot)").click(function(e){
+          e.stopPropagation()
+          const _path = $(this).attr('data-path')
           router.goto(_path)
         })
       } else {
-        const _path = $(dom).attr('data-path')
-        $(dom).click(function(){
+        $(dom).click(function(e){
+          e.stopPropagation()
+          const _path = $(dom).attr('data-path')
           router.goto(_path)
         })
       }

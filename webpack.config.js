@@ -76,6 +76,9 @@ module.exports = {
         target: 'http://localhost:8300/',
         ws: true
       },
+      logFileChanges: false,
+      notify: true,
+      injectChanges: true,
       host: 'localhost',
       port: 3000
     }),

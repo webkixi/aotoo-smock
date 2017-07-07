@@ -1,52 +1,142 @@
-import at from './aotoo'
-require('./tabs.styl')
+// require('./tabs.styl')
 
 
-/**
- * [
- *   {title, content, idf, parent, attr, path},
- *   {title, content, idf, parent, attr, path},
- * ]
- */
-function prepaireData(state){
-  const that = this
-  const props = this.props
-  const propsItemClass = props.itemClass ? props.itemClass + ' ' : ''
-  let menuData = []
-  let contentData = []
-  state.data.forEach( (item, ii) => {
-    // console.log(item);
-    const itemCls = ii == state.select 
-      ? item.itemClass ? propsItemClass+item.itemClass+' select' : propsItemClass+'select' 
-      : item.itemClass ? propsItemClass+item.itemClass : propsItemClass
-    
-    // 准备菜单数据
-    menuData.push({
-      index: ii,
-      path: item.path,
-      title: item.title,
-      idf: item.idf,
-      parent: item.parent,
-      attr: item.attr,
-      itemClass: itemCls,
-      itemMethod: item.itemMethod
+// ============================================================
+export class Tabs extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      data: this.props.data||[],
+      select: this.props.select||this.props.start||0,
+      selectData: {},
+      showMenu: this.props.showMenu||true,
+    }
+
+    this.prepaireData = this.prepaireData.bind(this)
+    this.createMenu = this.createMenu.bind(this)
+    this.getContent = this.getContent.bind(this)
+  }
+
+  componentWillMount() {
+    this.prepaireData(this.state)
+  }
+
+  componentWillUpdate(nextProps, nextState){
+    this.prepaireData(nextState)
+  }
+
+  /**
+   * [
+   *   {title, content, idf, parent, attr, path},
+   *   {title, content, idf, parent, attr, path},
+   * ]
+   */
+  prepaireData(state){
+    const that = this
+    const props = this.props
+    const propsItemClass = props.itemClass ? props.itemClass + ' ' : ''
+    let menuData = []
+    let contentData = []
+    state.data.forEach( (item, ii) => {
+      const itemCls = ii == state.select
+        ? item.itemClass ? propsItemClass+item.itemClass+' select' : propsItemClass+'select'
+        : item.itemClass ? propsItemClass+item.itemClass : propsItemClass
+
+      // 准备菜单数据
+      menuData.push({
+        index: ii,
+        path: item.path,
+        title: item.title,
+        idf: item.idf,
+        parent: item.parent,
+        attr: item.attr,
+        itemClass: itemCls,
+        itemMethod: item.itemMethod
+      })
+
+      // 准备内容数据
+      contentData.push({
+        index: ii,
+        path: item.path,
+        idf: item.idf,
+        content: item.content
+      })
     })
 
-    // 准备内容数据
-    contentData.push({
-      index: ii,
-      path: item.path,
-      idf: item.idf,
-      content: item.content
+    this.saxer.append({
+      MenuData: menuData,
+      ContentData: contentData
     })
-  })
 
-  this.saxer.append({
-    MenuData: menuData,
-    ContentData: contentData
-  })
+    this.createMenu()
+  }
 
-  this.createMenu()
+  createMenu(){
+    const menu_data = this.saxer.get().MenuData
+    const treeMenu = this.tree({
+      data: menu_data,
+      itemClass: this.props.itemClass,
+      itemMethod: this.props.itemMethod,
+      header: this.props.treeHeader,
+      footer: this.props.treeFotter
+    })
+
+    this.saxer.append({
+      MenuJsx: treeMenu
+    })
+  }
+
+  getContent(id){
+    const select = this.state.select
+    const contents = this.saxer.get().ContentData
+    let _contents = []
+    let selectContent
+
+    if (this.props.mulitple) {
+      contents.forEach( (item, ii) => {
+        if (!item.idf) {
+          _contents.push({
+            title: item.content,
+            itemClass: (id&&item.path&&item.path == id) ? 'select' : item.index == id ? 'select' : item.index == select ? 'select' : ''
+          })
+        }
+      })
+      return this.list({
+        data: _contents
+      })
+    }
+
+    contents.forEach( item => {
+      if ( (id||id==0)) {
+        if (item.path == id || item.index == id) {
+          selectContent = item.content
+        }
+      } else {
+        if (item.index == select) {
+          selectContent = item.content
+        }
+      }
+    })
+    return selectContent
+  }
+
+  render(){
+    const jsxMenu = this.saxer.get().MenuJsx
+    let content = this.getContent()
+    if (typeof content == 'function') {
+      content = content(this.state.selectData)
+    }
+
+    const cls = !this.props.tabClass ? 'tabsGroup ' : 'tabsGroup ' + this.props.tabClass
+    const boxes_cls = !this.props.mulitple ? 'tabsBoxes' : 'tabsBoxes mulitple'
+
+    return (
+      <div className={cls}>
+        { this.state.showMenu ? <div className='tabsMenus'>{jsxMenu}</div> : '' }
+        <div className={boxes_cls}>{content}</div>
+      </div>
+    )
+  }
 }
 
 Aotoo.extend('tabs', function(opts, utile){
@@ -58,101 +148,6 @@ Aotoo.extend('tabs', function(opts, utile){
     }
   }
   opts = utile.merge(dft, opts)
-
-// ============================================================
-
-  class Tabs extends React.Component {
-    constructor(props){
-      super(props)
-      this.state = {
-        data: this.props.data||[],
-        select: this.props.select||this.props.start||0,
-        selectData: {},
-        showMenu: this.props.showMenu||true,
-      }
-
-      this.prepaireData = this.prepaireData.bind(this)
-      this.createMenu = this.createMenu.bind(this)
-      this.getContent = this.getContent.bind(this)
-    }
-
-    componentWillMount() {
-      this.prepaireData(this.state)
-    }
-
-    componentWillUpdate(nextProps, nextState){
-      this.prepaireData(nextState)
-
-    }
-
-    createMenu(){
-      const menu_data = this.saxer.get().MenuData
-      const treeMenu = this.tree({
-        data: menu_data,
-        itemClass: this.props.itemClass,
-        itemMethod: this.props.itemMethod,
-        header: this.props.treeHeader,
-        footer: this.props.treeFotter
-      })
-
-      this.saxer.append({
-        MenuJsx: treeMenu
-      })
-    }
-
-    getContent(id){
-      const select = this.state.select
-      const contents = this.saxer.get().ContentData
-      let _contents = []
-      let selectContent
-
-      if (this.props.mulitple) {
-        contents.forEach( (item, ii) => {
-          if (!item.idf) {
-            _contents.push({
-              title: item.content,
-              itemClass: (id&&item.path&&item.path == id) ? 'select' : item.index == id ? 'select' : item.index == select ? 'select' : ''
-            })
-          }
-        })
-        return this.list({
-          data: _contents
-        })
-      }
-
-      contents.forEach( item => {
-        if ( (id||id==0)) {
-          if (item.path == id || item.index == id) {
-            selectContent = item.content
-          }
-        } else {
-          if (item.index == select) {
-            selectContent = item.content
-          }
-        }
-      })
-      return selectContent
-    }
-
-    render(){
-      const jsxMenu = this.saxer.get().MenuJsx
-      let content = this.getContent()
-      if (typeof content == 'function') {
-        content = content(this.state.selectData)
-      }
-
-      const cls = !this.props.tabClass ? 'tabsGroup ' : 'tabsGroup ' + this.props.tabClass
-      const boxes_cls = !this.props.mulitple ? 'tabsBoxes' : 'tabsBoxes mulitple'
-
-      return (
-        <div className={cls}>
-          { this.state.showMenu ? <div className='tabsMenus'>{jsxMenu}</div> : '' }
-          <div className={boxes_cls}>{content}</div>
-        </div>
-      )
-    }
-  }
-
 
   const Action = {
     UPDATE: function(ostate, opts){
@@ -177,27 +172,27 @@ Aotoo.extend('tabs', function(opts, utile){
 })
 
 
-const WrapElement = Aotoo.wrap(
-  <div>这个真好吃</div>, {
-    rendered: function(dom){
-      console.log('========= rendered');
-    },
-    leave: function(){
-      console.log('========= leave');
-    }
-  }
-)
+// const WrapElement = Aotoo.wrap(
+//   <div>这个真好吃</div>, {
+//     rendered: function(dom){
+//       console.log('========= rendered');
+//     },
+//     leave: function(){
+//       console.log('========= leave');
+//     }
+//   }
+// )
 
-function mkTabs(opts){
-  const dft = {
-    props: {
-      mulitple: false,
-      data: [],
-      tabClass: 'tabs-nornal-top'
-    }
-  }
-  // if (){}
-}
+// function mkTabs(opts){
+//   const dft = {
+//     props: {
+//       mulitple: false,
+//       data: [],
+//       tabClass: 'tabs-nornal-top'
+//     }
+//   }
+//   // if (){}
+// }
 
 // const tabs = Aotoo.tabs({
 //   props: {

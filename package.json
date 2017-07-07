@@ -39,6 +39,7 @@
     "aotoo": "^1.2.9",
     "aotoo-mixins-iscroll": "^1.0.4",
     "aotoo-mixins-scroll": "^1.0.1",
+    "aotoo-react-tabs": "^1.0.0",
     "aotoo-react-treex": "^1.0.4",
     "ejs": "^2.5.6",
     "iscroll": "^5.2.0",

@@ -37,8 +37,9 @@ const router = Aotoo.router({
       {title: '我是一级C', content: <WrapElement />, path: 'a3', attr:{path: 'a3'}, itemClass: 'yyy'},
     ],
     itemClass: 'nihao',
+    // routerClass: 'router-basic-phone',
     routerClass: 'router-basic',
-    // treeHeader: <div><a href="#"><img src="http://pic.c-ctrip.com/common/c_logo2013.png" /></a></div>,
+    treeHeader: <div className='router-header'><a href="#"><img src="http://pic.c-ctrip.com/common/c_logo2013.png" /></a></div>,
     // treeFooter: <div className='xx'>你个妹妹</div>,
     itemMethod: function(dom){
       if($(dom).hasClass('itemroot')) {
@@ -57,5 +58,25 @@ const router = Aotoo.router({
     }
   }
 })
-
 router.render('test', function(dom){ })
+// const Xx = Aotoo.wrap(
+//   <div className='xxx'>
+//     <input type="checkbox" className='router-close' />
+//     {router.render()}
+//   </div>
+// )
+// <div className='xxx'>
+//   <div className='header'>
+//     <input type="checkbox" className='router-close' />
+//     {router.render()}
+//   </div>
+//   <div className='wrapper'>
+//     <ul>
+//       <li>你好呀你好呀</li>
+//       <li>你好呀你好呀</li>
+//       <li>你好呀你好呀</li>
+//       <li>你好呀你好呀</li>
+//     </ul>
+//   </div>
+// </div>
+// Aotoo.render(<Xx />, document.getElementById('test'))

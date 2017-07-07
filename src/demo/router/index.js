@@ -99,10 +99,10 @@ Aotoo.extend('router', function(opts, utile){
       let menuData = []
       let contentData = []
       state.data.forEach( (item, ii) => {
-        const itemCls = ii == state.select 
-          ? item.itemClass ? propsItemClass+item.itemClass+' select' : propsItemClass+'select' 
+        const itemCls = ii == state.select
+          ? item.itemClass ? propsItemClass+item.itemClass+' select' : propsItemClass+'select'
           : item.itemClass ? propsItemClass+item.itemClass : propsItemClass
-        
+
         // 准备菜单数据
         menuData.push({
           index: ii,
@@ -225,14 +225,14 @@ Aotoo.extend('router', function(opts, utile){
       this.getRealContent = this.getRealContent.bind(this)
       this.findPath = this.findPath.bind(this)
     }
-    
+
     componentWillMount() {
       super.componentWillMount()
       const that = this
       const menuData = this.saxer.get().MenuData
       const contentData = this.saxer.get().ContentData
       const selectItem = menuData[this.state.select]
-      
+
 
       this.on('historypush', function(opts){
         const _path = opts.path
@@ -329,7 +329,7 @@ Aotoo.extend('router', function(opts, utile){
           if (result['$$typeof']) return result
 
           // enter, leave, main, loaded
-          if (typeof result.enter == 'function') return result.enter(selectData)  
+          if (typeof result.enter == 'function') return result.enter(selectData)
           else if(typeof result.main == 'function') {
             return result.main(selectData)
           }
@@ -351,13 +351,13 @@ Aotoo.extend('router', function(opts, utile){
       } else {
         pre = _leftStack.length ? _leftStack[_leftStack.length-1] : '';
       }
-      
+
       if (pre && pre.id !== id) {
         this.prePageInfo = pre
         preContent = this.getRealContent(this.getContent(pre.id))
         prePage = <div key={utile.uniqueId('Router_Single_')} className={boxCls+animateout}>{preContent}</div>
       }
-      
+
       const oriContent = this.getContent(id)
       const content = this.getRealContent(oriContent)
       const curPage = <div key={utile.uniqueId('Router_Single_')} className={boxCls+animatein}>{content}</div>
@@ -381,7 +381,7 @@ Aotoo.extend('router', function(opts, utile){
         if (typeof _pre == 'function') {
           let result = _pre(InstanceContext)
           if (typeof result == 'object') {
-            if (typeof result.leave == 'function') return result.leave()  
+            if (typeof result.leave == 'function') return result.leave()
           }
         }
       }
@@ -443,7 +443,7 @@ Aotoo.extend('router', function(opts, utile){
           data: state.selectData
         })
       }
-      
+
       if (typeof opts.cb == 'function') {
         setTimeout(function() { opts.cb() }, 100);
       }
@@ -454,7 +454,7 @@ Aotoo.extend('router', function(opts, utile){
 
   // const router = Aotoo(Tabs, Action, dft)
   const router = Aotoo(Router, Action, dft)
-  
+
   router.saxer.append({
     InstanceContext: router
   })
@@ -472,7 +472,7 @@ Aotoo.extend('router', function(opts, utile){
       this.goto(id, data)
     },
     goto: function(where, data){
-      if (typeof where != 'string') return 
+      if (typeof where != 'string') return
       const target = this.getWhereInfo(where)
       this.$select({
         select: target.index,
@@ -482,7 +482,7 @@ Aotoo.extend('router', function(opts, utile){
     },
     back: function(where, data){
       if (where) {
-        if (typeof where != 'string') return 
+        if (typeof where != 'string') return
         const target = this.getWhereInfo(where)
         this.$select({
           select: target.index,

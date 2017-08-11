@@ -115,13 +115,30 @@ aotoo-mixins-scroll@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/aotoo-mixins-scroll/-/aotoo-mixins-scroll-1.0.1.tgz#95b5b807ccfae8af75ac7425a6dd9ac5f3a27c12"
 
+aotoo-react-router@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/aotoo-react-router/-/aotoo-react-router-1.0.0.tgz#3b98775c4f308618bb822a8a1c492c1e8567a7e2"
+  dependencies:
+    aotoo-mixins-iscroll "^1.0.4"
+    aotoo-react-tabs "^1.0.0"
+
+aotoo-react-tabs@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/aotoo-react-tabs/-/aotoo-react-tabs-1.0.0.tgz#8fc88f69e1e347eb52b8becb46c5d9961c26af61"
+
 aotoo-react-treex@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/aotoo-react-treex/-/aotoo-react-treex-1.0.4.tgz#5d71524978abfc1e5717465c1ea5e11e8c1f5148"
 
-aotoo@^1.2.14-beta7:
-  version "1.4.21"
-  resolved "https://registry.yarnpkg.com/aotoo/-/aotoo-1.4.21.tgz#f509e8102a4e3f0aa96301abd259f84e48cbcc6e"
+aotoo-web-widgets@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/aotoo-web-widgets/-/aotoo-web-widgets-1.0.1.tgz#f24309711e7f0bce169a834c62aa1827ff51fc18"
+  dependencies:
+    path "^0.12.7"
+
+aotoo@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/aotoo/-/aotoo-2.0.0.tgz#170c39407464338f03e36ced9bbbc2c1a76ac0b1"
   dependencies:
     aotoo-inject "^1.0.7"
     lodash.clonedeep "^4.5.0"

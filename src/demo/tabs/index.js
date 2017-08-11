@@ -1,4 +1,4 @@
-import at from './aotoo'
+import at from 'aotoo'
 require('./tabs.styl')
 
 

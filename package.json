@@ -36,10 +36,13 @@
     "webpack-dev-server": "^2.5.0"
   },
   "dependencies": {
-    "aotoo": "^1.2.14-beta7",
+    "aotoo": "^2.0.0",
     "aotoo-mixins-iscroll": "^1.0.4",
     "aotoo-mixins-scroll": "^1.0.1",
+    "aotoo-react-router": "^1.0.0",
+    "aotoo-react-tabs": "^1.0.0",
     "aotoo-react-treex": "^1.0.4",
+    "aotoo-web-widgets": "^1.0.1",
     "ejs": "^2.5.6",
     "iscroll": "^5.2.0",
     "jquery": "^3.2.1",

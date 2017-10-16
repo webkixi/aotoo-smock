@@ -1,4 +1,26 @@
-body{
-  font-size: 16px;
-  color: red;
-}
+.tabsGroup
+  width: 100%
+  height: 180px
+  &.tabs-normal-top
+    display: flex
+    flex-direction: column
+    >.tabsMenus
+      height: 40px
+      >ul.hlist
+        display: flex
+        height: 100%
+        width: 100%
+        >li
+          padding: 0
+          margin: 0
+          height: 100%
+          background-color: #91d6f5
+          border-right: 1px solid #fff
+          flex: 1
+          display: flex
+          align-items: center
+          justify-content: center
+    >.tabsBoxes
+      padding: 1em
+      flex: 3
+      background-color: #f8f8f8

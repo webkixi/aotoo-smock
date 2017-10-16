@@ -33,19 +33,28 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
     "webpack": "^3.0.0",
-    "webpack-dev-server": "^2.5.0"
+    "webpack-dev-server": "^2.9.1"
   },
   "dependencies": {
-    "aotoo": "^2.0.0",
+    "aotoo": "^3.0.3",
     "aotoo-mixins-iscroll": "^1.0.4",
     "aotoo-mixins-scroll": "^1.0.1",
     "aotoo-react-router": "^1.0.0",
-    "aotoo-react-tabs": "^1.0.0",
-    "aotoo-react-treex": "^1.0.4",
-    "aotoo-web-widgets": "^1.0.1",
+    "aotoo-react-tabs": "^1.0.5",
+    "aotoo-react-treex": "^1.0.5",
+    "aotoo-web-widgets": "^1.0.17",
     "ejs": "^2.5.6",
+    "fkp-sax": "^1.5.19",
     "iscroll": "^5.2.0",
     "jquery": "^3.2.1",
-    "react-combinex": "^1.1.9-beta4"
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.filter": "^4.6.0",
+    "lodash.find": "^4.6.0",
+    "lodash.findindex": "^4.6.0",
+    "lodash.isplainobject": "^4.0.6",
+    "lodash.merge": "^4.6.0",
+    "lodash.uniqueid": "^4.0.1",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
   }
 }

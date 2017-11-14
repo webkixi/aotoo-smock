@@ -1,58 +1,60 @@
-import './index.styl'
-import 'aotoo'
-import 'aotoo-web-widgets'
-import $ from 'jquery/dist/jquery.min'
-import 'aotoo-react-tabs'
-import treex from 'aotoo-react-treex'
+import './demo/router'
 
-const treex_a_data = { props: { data: ['1','2','3','4'] } }
+// import './index.styl'
+// import 'aotoo'
+// import 'aotoo-web-widgets'
+// import $ from 'jquery/dist/jquery.min'
+// import 'aotoo-react-tabs'
+// import treex from 'aotoo-react-treex'
 
-const treex_b_data = { props: { data: [] } }
+// const treex_a_data = { props: { data: ['1','2','3','4'] } }
 
-const treex_c_data = { props: { data: [] } }
+// const treex_b_data = { props: { data: [] } }
 
-const updata_data = {
-  a: {data: ['a','b','c']},
-  b: {data: ['44','55','66']},
-  c: {data: ['xx','yy','zz']}
-}
+// const treex_c_data = { props: { data: [] } }
 
-const trees = {
-  a: treex(treex_a_data),
-  b: treex(treex_b_data),
-  c: treex(treex_c_data)
-}
+// const updata_data = {
+//   a: {data: ['a','b','c']},
+//   b: {data: ['44','55','66']},
+//   c: {data: ['xx','yy','zz']}
+// }
 
-// {title: 'ccc', content: <WrapElement />},
+// const trees = {
+//   a: treex(treex_a_data),
+//   b: treex(treex_b_data),
+//   c: treex(treex_c_data)
+// }
 
-const Tabs = Aotoo.tabs({
-  props: {
-    tabClass: 'tabs-normal-top',
-    data: [
-      {title: 'aaa', content: trees['a'].render() },
-      {title: 'bbb', content: trees['b'].render() },
-      {title: 'ccc', content: trees['c'].render() },
-    ],
-    tabItemMethod: function(dom, index){
-      $(dom).off().one('click', function(){
-        Tabs.$select({ select: index })
-        switch (index) {
-          case 0:
-            trees['a'].$update(updata_data['a'])
-            break;
-          case 1:
-          trees['b'].$update(updata_data['b'])
-            break;
-          case 2:
-          trees['c'].$update(updata_data['c'])
-            break;
-        }
-      })
-    }
-  }
-})
+// // {title: 'ccc', content: <WrapElement />},
 
-Tabs.render('test')
+// const Tabs = Aotoo.tabs({
+//   props: {
+//     tabClass: 'tabs-normal-top',
+//     data: [
+//       {title: 'aaa', content: trees['a'].render() },
+//       {title: 'bbb', content: trees['b'].render() },
+//       {title: 'ccc', content: trees['c'].render() },
+//     ],
+//     tabItemMethod: function(dom, index){
+//       $(dom).off().one('click', function(){
+//         Tabs.$select({ select: index })
+//         switch (index) {
+//           case 0:
+//             trees['a'].$update(updata_data['a'])
+//             break;
+//           case 1:
+//           trees['b'].$update(updata_data['b'])
+//             break;
+//           case 2:
+//           trees['c'].$update(updata_data['c'])
+//             break;
+//         }
+//       })
+//     }
+//   }
+// })
+
+// Tabs.render('test')
 
 // import 'aotoo'
 // import 'aotoo-web-widgets'

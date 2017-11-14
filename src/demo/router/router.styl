@@ -154,6 +154,13 @@ routerHeader()
 routerBoxes()
   overflow-y: auto;
   min-height: 600px
+  opacity: 1;
+  overflow: hidden;
+  -webkit-transition:.4s;
+  transition:.4s;
+  background-color: #fff;
+  -webkit-transform: translate3d(100%,0,0);
+  transform: translate3d(100%,0,0);
 
 .router-basic-phone
   .routerMenus
@@ -185,13 +192,48 @@ routerBoxes()
       opacity: 0;
       width: 100%;
 
-  .routerBoxes
-    routerBoxes()
-    margin: 10px
-    position: relative;
-    z-index: 1   //这个要比routerMenus 低
-  .contentHide
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: -2;
+.routerBoxes
+  margin: 10px
+  position: relative;
+  z-index: 1   //这个要比routerMenus 低
+  min-height: 600px
+  // position: absolute
+  opacity: 1;
+  overflow: hidden;
+  overflow-y: auto;
+  // -webkit-transition:.4s;
+  // transition:.4s;
+  background-color: #fff;
+  -webkit-transform: translate3d(100%,0,0);
+  transform: translate3d(100%,0,0);
+  -webkit-transition: all 0.4s cubic-bezier(0.4, 0, 1, 1)
+  -moz-transition: all 0.4s cubic-bezier(0.4, 0, 1, 1)
+  -o-transition: all 0.4s cubic-bezier(0.4, 0, 1, 1)
+  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1)
+.contentHide
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -2;
+
+.block-in-right
+  opacity: 100;
+  z-index: 23;
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+
+.block-out-right
+  opacity: 100;
+  z-index: -1;
+  -webkit-transform: translate3d(100%,0,0);
+  transform: translate3d(100%,0,0);
+
+.fade-in
+  opacity: 100;
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+  
+.fade-out
+  opacity: 0;
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);

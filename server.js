@@ -11,6 +11,11 @@ new WebpackDevServer( compiler, {
     'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
   },
   compress: true,
+  noInfo: false,
+  overlay: {
+    warnings: true,
+    errors: true
+  },
   contentBase: configs.output.path,
   publicPath: '/',
   hot: true,
@@ -19,7 +24,7 @@ new WebpackDevServer( compiler, {
     redirect: false
   },
   host: '0.0.0.0',
-  port: 3000,
+  port: 8300,
   clientLogLevel: "info",
   stats: { colors: true },
   watchOptions: {

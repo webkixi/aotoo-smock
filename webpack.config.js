@@ -7,8 +7,14 @@ var DIST = path.join(__dirname, 'dist')
 
 module.exports = {
   entry: {
+    common: [
+      'babel-polyfill',
+      'aotoo',
+      'aotoo-web-widgets'
+    ],
     index: [
-      'webpack-dev-server/client?http://localhost:3000/',
+      'react-hot-loader/patch',
+      'webpack-dev-server/client?http://localhost:8300/',
       'webpack/hot/only-dev-server',
       "./src/index.js"
     ]
@@ -22,20 +28,22 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.js$/,
+      { test: /\.js$/,
         use:[{
-          loader: "babel-loader",
+          loader: "babel-loader?cacheDirectory",
           options: {
             presets:["react", "es2015", "stage-0"],
-            plugins: [
-              "babel-plugin-transform-decorators-legacy"
-            ]
           }
         }]
       },
-      {
-        test: /\.styl$/,
+      { test: /\.stylus/,
+        use: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          publicPath: '/',
+          use: ['stylus-loader', 'css-loader']
+        })
+      },
+      { test: /\.styl$/,
         use: ['style-loader', 'css-loader', 'postcss-loader', 'stylus-loader']
         // use: [
         //   'style-loader', 
@@ -52,25 +60,20 @@ module.exports = {
         //   },
         //   'stylus-loader'
         // ]
-        // use: ExtractTextPlugin.extract({
-        //   fallback: "style-loader",
-        //   publicPath: '/',
-        //   use: ['stylus-loader', 'css-loader']
-        // })
       }
     ]
   },
   resolve:{
-    extensions:['.js']
+    extensions:['.js', '.styl', '.stylus', '.css', '.jsx', '.json', '.md']
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    // new ExtractTextPlugin({
-    //   filename:  (getPath) => {
-    //     return getPath('[name].css')
-    //   },
-    //   allChunks: true
-    // }),
+    new ExtractTextPlugin({
+      filename:  (getPath) => {
+        return getPath('[name].css')
+      },
+      allChunks: true
+    }),
     new BrowserSyncPlugin({
       proxy: {
         target: 'http://localhost:8300/',
@@ -85,8 +88,14 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Custom template',
       template: 'src/assets/html/my-index.html', // Load a custom template 
-      chunks: ['index'],
-      inject: 'body' // Inject all scripts into the body 
+      inject: 'body', // Inject all scripts into the body 
+      chunks: ['common', 'index'],
+      chunksSortMode: function (chunk1, chunk2) {
+        var order = ['common', 'index'];
+        var order1 = order.indexOf(chunk1.names[0]);
+        var order2 = order.indexOf(chunk2.names[0]);
+        return order1 - order2;
+      },
 
       // template: path.join(__dirname, 'default_index.ejs'),
       // filename: 'index.html',

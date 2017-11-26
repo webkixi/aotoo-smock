@@ -9,8 +9,7 @@ module.exports = {
   entry: {
     common: [
       'babel-polyfill',
-      'aotoo',
-      'aotoo-web-widgets'
+      './src/common.js'
     ],
     index: [
       'react-hot-loader/patch',

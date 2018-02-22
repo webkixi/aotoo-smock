@@ -19,6 +19,7 @@ new WebpackDevServer( compiler, {
   contentBase: configs.output.path,
   publicPath: '/',
   hot: true,
+  inline: true,
   historyApiFallback: true,
   staticOptions: {
     redirect: false

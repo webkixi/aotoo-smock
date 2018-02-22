@@ -12,9 +12,9 @@ module.exports = {
       './src/common.js'
     ],
     index: [
-      'react-hot-loader/patch',
-      'webpack-dev-server/client?http://localhost:8300/',
-      'webpack/hot/only-dev-server',
+      // 'react-hot-loader/patch',
+      // 'webpack-dev-server/client?http://localhost:8300/',
+      // 'webpack/hot/only-dev-server',
       "./src/index.js"
     ]
   },

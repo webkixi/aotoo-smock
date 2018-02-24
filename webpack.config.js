@@ -39,11 +39,11 @@ module.exports = {
         use: ExtractTextPlugin.extract({
           fallback: "style-loader",
           publicPath: '/',
-          use: ['stylus-loader', 'css-loader']
+          use: ['css-loader', 'stylus-loader']
         })
       },
       { test: /\.styl$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader', 'stylus-loader']
+        use: ['style-loader', 'css-loader', 'stylus-loader']
         // use: [
         //   'style-loader', 
         //   { 
@@ -66,7 +66,7 @@ module.exports = {
     extensions:['.js', '.styl', '.stylus', '.css', '.jsx', '.json', '.md']
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
     new ExtractTextPlugin({
       filename:  (getPath) => {
         return getPath('[name].css')

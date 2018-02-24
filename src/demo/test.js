@@ -1,11 +1,11 @@
-import at from './aotoo'
+import 'aotoo'
+import 'aotoo-web-widgets'
 import treex from 'aotoo-react-treex'
-import style from './index.styl'
+import 'aotoo-mixins-iscroll'
 
-const inject = Aotoo.inject()
+const inject = Aotoo.inject
 
 inject.css([
-  '/index.css',
   '/hello.css'
 ], function(){
   inject.js('/hello.js', function(){

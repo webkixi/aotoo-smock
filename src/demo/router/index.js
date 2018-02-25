@@ -34,9 +34,16 @@ const router = Aotoo.router({
     routerClass: 'router-basic',
     showMenu: true,
     itemMethod: function (dom) {
-      const _path = $(dom).attr('data-path')
       $(dom).off('click').on('click', function (e) {
         e.stopPropagation()
+        const _path = $(this).attr('data-path')
+        if (_path) {
+          router.goto(_path)
+        }
+      })
+      $(dom).find('.itemCategory ul.property-ul li').off('click').on('click', function (e) {
+        e.stopPropagation()
+        const _path = $(this).attr('data-path')
         if (_path) {
           router.goto(_path)
         }

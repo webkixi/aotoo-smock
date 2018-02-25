@@ -1,4 +1,3 @@
-import './router.styl'
 import $ from 'jquery'
 import 'aotoo-react-router'
 

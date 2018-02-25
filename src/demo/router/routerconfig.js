@@ -1,6 +1,9 @@
 import leaveDemoPage from './pages/leave'
 import mywrap from './pages/wrap'
 
+import itemUsage from './pages/item/usage'
+import itemUsageJsx from './pages/item/usagejsx'
+
 const Xxx = props => {
   return (
     <div>
@@ -47,6 +50,28 @@ const routerData = [
     },
     itemClass: 'yyy'
   }
+]
+
+const itemRouter = [
+  {
+    title: 'Item',
+    path: 'itemFather',
+    idf: 'item'
+  },
+          {
+            title: '简单使用',
+            path: 'usage',
+            parent: 'item',
+            content: itemUsage,
+            attr: { path: 'usage' }
+          },
+          {
+            title: '简单使用JSX',
+            path: 'usagejsx',
+            parent: 'item',
+            content: itemUsageJsx,
+            attr: { path: 'usagejsx' }
+          },
 ]
 
 module.exports = routerData

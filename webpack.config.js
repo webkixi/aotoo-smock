@@ -3,6 +3,11 @@ var path = require('path')
 var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
+  , HappyPack = require('happypack')
+  , os = require('os')
+  // 构造一个线程池
+  , happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
+
 var DIST = path.join(__dirname, 'dist')
 
 module.exports = {
@@ -28,12 +33,11 @@ module.exports = {
   module: {
     rules: [
       { test: /\.js$/,
-        use: [{
-          loader: 'babel-loader?cacheDirectory',
-          options: {
-            presets: ['react', 'es2015', 'stage-0']
-          }
-        }]
+        use: [ 'happypack/loader'],
+        options: { id: 'babel' },
+        exclude: [
+          path.resolve(__dirname, "../node_modules")
+        ],
       },
       { test: /\.stylus/,
         use: ExtractTextPlugin.extract({
@@ -44,21 +48,6 @@ module.exports = {
       },
       { test: /\.styl$/,
         use: ['style-loader', 'css-loader', 'stylus-loader']
-      // use: [
-      //   'style-loader', 
-      //   { 
-      //     loader: 'css-loader', 
-      //     options: { importLoaders: 1 } 
-      //   }, {
-      //     loader: 'postcss-loader',
-      //     options: {
-      //       config: {
-      //         path: 'path/to/postcss.config.js'
-      //       }
-      //     }
-      //   },
-      //   'stylus-loader'
-      // ]
       }
     ]
   },
@@ -72,6 +61,18 @@ module.exports = {
         return getPath('[name].css')
       },
       allChunks: true
+    }),
+    new HappyPack({
+      id: "babel",
+      verbose: true,
+      loaders: [{
+        loader: 'babel-loader',
+        options: {
+          cacheDirectory: true,
+          presets: [ "react", "es2015", "stage-0" ],
+        }
+      }],
+      threadPool: happyThreadPool
     }),
     new BrowserSyncPlugin({
       proxy: {

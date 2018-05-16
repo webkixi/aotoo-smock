@@ -11,6 +11,8 @@ import itemUsageAttr from './pages/item/usageattr'
 import itemUsageLi from './pages/item/usageli'
 import itemUsageDd from './pages/item/usagedd'
 
+import stateComponent from './pages/statecomponent'
+
 const Xxx = props => {
   return (
     <div>
@@ -56,7 +58,13 @@ let routerData = [
       path: 'wrap'
     },
     itemClass: 'yyy'
-  }
+  },
+  {
+    title: '状态组件',
+    path: 'stateComponent',
+    content: stateComponent,
+    attr: { path: 'stateComponent' }
+  },
 ]
 
 let itemRouter = [

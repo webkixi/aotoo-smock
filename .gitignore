@@ -11,6 +11,7 @@ npm-debug.log
 .DS_Store
 /fdocs
 *.db
+.*
 baidu_verify_B7KJMQXfQu.html
 /.vscode
 /shadowserver

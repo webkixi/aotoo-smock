@@ -5,6 +5,13 @@ var path = require('path')
 var fs = require('fs')
 const ejs = require('ejs')
 
+const DIST = path.join(__dirname, 'dist/dev')
+const DISTHTML = path.join(DIST, 'html')
+const DISTCSS = path.join(DIST, 'css')
+const DISTJS = path.join(DIST, 'js')
+
+
+
 var compiler = webpack(configs)
 var staticsPath = {
   imgroot: __dirname
@@ -37,7 +44,7 @@ new WebpackDevServer(compiler, {
     warnings: true,
     errors: true
   },
-  contentBase: configs.output.path,
+  contentBase: DIST,
   publicPath: '/',
   hot: true,
   inline: true,
@@ -45,13 +52,13 @@ new WebpackDevServer(compiler, {
   staticOptions: {
     redirect: false
   },
-  setup: function (app) {
+  before: function (app) {
     app.engine('html', ejs.renderFile)
     app.set('view engine', 'html')
-    // app.set('views', configs.output.path + '/html/')
-    app.set('views', configs.output.path)
+    // app.set('views', DIST + '/html/')
+    app.set('views', DISTHTML)
     app.get(/\/css\/(.*)\.css$/, function (req, res) {
-      const staticPath = path.join(configs.output.path, req._parsedUrl._raw)
+      const staticPath = path.join(DISTCSS, req._parsedUrl._raw)
       if (fs.existsSync(staticPath)) {
         res.sendFile(staticPath)
       } else {
@@ -60,7 +67,7 @@ new WebpackDevServer(compiler, {
     })
 
     app.get(/\/js\/(.*)\.(js|json)$/, function (req, res) {
-      const staticPath = path.join(configs.output.path, req._parsedUrl._raw)
+      const staticPath = path.join(DISTJS, req._parsedUrl._raw)
       if (fs.existsSync(staticPath)) {
         res.sendFile(staticPath)
       } else {
@@ -85,6 +92,10 @@ new WebpackDevServer(compiler, {
         res.status(404).send('Sorry! file is not exist.')
       }
     })
+
+    app.get('/', function(req, res) {
+      return res.render('index')
+    })
   },
   host: '0.0.0.0',
   port: 8300,
@@ -94,8 +105,9 @@ new WebpackDevServer(compiler, {
     aggregateTimeout: 300,
     poll: 1000
   },
-  watchContentBase: true
-}).listen(8300, 'localhost', function (err, result) {
+  watchContentBase: true,
+  open: true
+}).listen(3000, 'localhost', function (err, result) {
   if (err) {
     return console.log(err)
   }

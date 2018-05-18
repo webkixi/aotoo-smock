@@ -1,6 +1,7 @@
 /**
  * 引入样式
  */
+import 'aotoo-common'
 import './index.stylus'
 
 

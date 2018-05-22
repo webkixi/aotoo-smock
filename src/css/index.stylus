@@ -1,5 +1,5 @@
-@import "./css/_common"
-@import "./css/animate"
+@import "./_common"
+@import "./animate"
 
 after($right = 10px, $top = initial, $bottom = initial, $left = initial)
   position: absolute;

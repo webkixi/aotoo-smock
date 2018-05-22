@@ -1,7 +1,7 @@
 function forLeave(router) {
   return {
     main: function () {
-      return <div>我是a3</div>
+      return <div>我是ao7</div>
     },
     enter: function (data) {
       return this.main()

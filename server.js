@@ -1,6 +1,7 @@
 var WebpackDevServer = require('webpack-dev-server')
 var webpack = require('webpack')
-var configs = require('./webpack.config')
+var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
+var configs = require('./build/webpack.config')
 var path = require('path')
 var fs = require('fs')
 const ejs = require('ejs')
@@ -9,12 +10,8 @@ const DIST = path.join(__dirname, 'dist/dev')
 const DISTHTML = path.join(DIST, 'html')
 const DISTCSS = path.join(DIST, 'css')
 const DISTJS = path.join(DIST, 'js')
-
-
-
-var compiler = webpack(configs)
-var staticsPath = {
-  imgroot: __dirname
+const staticsPath = {
+  imgroot: path.join(__dirname, 'src')
 }
 
 function queryParams (uri) {
@@ -33,6 +30,25 @@ function valideExt (filename) {
   return accessExt
 }
 
+const openBrowser = () => {
+  return new BrowserSyncPlugin({
+    proxy: {
+      target: 'http://localhost:8300/',
+      ws: true
+    },
+    logFileChanges: false,
+    notify: false,
+    // injectChanges: true,
+    host: 'localhost',
+    port: 3000
+  }, {
+    reload: false
+  })
+}
+
+
+configs.plugins.push(openBrowser())
+const compiler = webpack(configs)
 new WebpackDevServer(compiler, {
   headers: {
     'Access-Control-Allow-Origin': '*',
@@ -49,31 +65,63 @@ new WebpackDevServer(compiler, {
   hot: true,
   inline: true,
   historyApiFallback: true,
+  disableHostCheck: true,
   staticOptions: {
     redirect: false
   },
+  clientLogLevel: 'info',
+  // progress: true,
+  stats: {
+    assets: false,
+    cached: false,
+    cachedAssets: false,
+    children: false,
+    chunks: false,
+    chunkModules: false,
+    chunkOrigins: false,
+    colors: true,
+    depth: false,
+    entrypoints: true,
+    excludeAssets: /app\/assets/,
+    hash: false,
+    maxModules: 15,
+    modules: false,
+    performance: true,
+    reasons: false,
+    source: false,
+    timings: true,
+    version: false,
+    warnings: true,
+  },
+  watchOptions: {
+    ignored: /\/node_modules\/.*/,
+    aggregateTimeout: 300,
+    poll: 1000
+  },
+  host: 'localhost',
+  watchContentBase: true,
+  // open: true
   before: function (app) {
     app.engine('html', ejs.renderFile)
     app.set('view engine', 'html')
-    // app.set('views', DIST + '/html/')
     app.set('views', DISTHTML)
-    app.get(/\/css\/(.*)\.css$/, function (req, res) {
-      const staticPath = path.join(DISTCSS, req._parsedUrl._raw)
-      if (fs.existsSync(staticPath)) {
-        res.sendFile(staticPath)
-      } else {
-        res.status(404).send('Sorry! file is not exist.')
-      }
-    })
+    // app.get(/\/css\/(.*)\.css$/, function (req, res) {
+    //   const staticPath = path.join(DIST, req._parsedUrl._raw)
+    //   if (fs.existsSync(staticPath)) {
+    //     res.sendFile(staticPath)
+    //   } else {
+    //     res.status(404).send('Sorry! file is not exist.')
+    //   }
+    // })
 
-    app.get(/\/js\/(.*)\.(js|json)$/, function (req, res) {
-      const staticPath = path.join(DISTJS, req._parsedUrl._raw)
-      if (fs.existsSync(staticPath)) {
-        res.sendFile(staticPath)
-      } else {
-        res.status(404).send('Sorry! file is not exist.')
-      }
-    })
+    // app.get(/\/js\/(.*)\.(js|json)$/, function (req, res) {
+    //   const staticPath = path.join(DIST, req._parsedUrl._raw)
+    //   if (fs.existsSync(staticPath)) {
+    //     res.sendFile(staticPath)
+    //   } else {
+    //     res.status(404).send('Sorry! file is not exist.')
+    //   }
+    // })
 
     app.get(/\/img\/(.*)\.(ico|jpg|jpeg|png|gif)$/, function (req, res) {
       const staticPath = path.join(staticsPath.imgroot, req._parsedUrl._raw)
@@ -94,20 +142,14 @@ new WebpackDevServer(compiler, {
     })
 
     app.get('/', function(req, res) {
-      return res.render('index')
+      res.render('index', {
+        htmlWebpackPlugin: {
+          options: {title: 'smock棒棒的'}
+        }
+      })
     })
   },
-  host: '0.0.0.0',
-  port: 8300,
-  clientLogLevel: 'info',
-  stats: { colors: true },
-  watchOptions: {
-    aggregateTimeout: 300,
-    poll: 1000
-  },
-  watchContentBase: true,
-  open: true
-}).listen(3000, 'localhost', function (err, result) {
+}).listen(8300, 'localhost', function (err, result) {
   if (err) {
     return console.log(err)
   }

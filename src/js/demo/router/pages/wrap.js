@@ -4,6 +4,7 @@ const HelloWrap = (props) => {
   const router = props.inst
   const We = Aotoo.wrap(
     <div>
+      <div>444</div>
       <img src='/images/djsgd.jpeg' />
       {props.info}
     </div>,

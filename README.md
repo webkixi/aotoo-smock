@@ -1,10 +1,9 @@
 # aotoo-smock
-webpack4 试验用脚手架
+webpack4 简单脚手架
 
 ## Usage
 
 ```bash
-  yarn run dev-clean # 完全重建 
-  yarn run dev # 重建除common.js外所有文件
-  yarn run clear # 清空dist目录
+  yarn start  # 全编译启动
+  yarn run server # 忽略common编译启动
 ```

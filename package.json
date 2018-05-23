@@ -51,7 +51,7 @@
     "webpack": "^4",
     "webpack-cli": "^2.1.3",
     "webpack-dev-server": "^3",
-    "webpack-memory2fs-plugin": "^1.0.1"
+    "webpack-memory2fs-plugin": "^1.0.2"
   },
   "dependencies": {
     "aotoo-common": "^2.1.1",

@@ -11,8 +11,6 @@ var HtmlWebpackPlugin = require('html-webpack-plugin')
   , envAttributs = require('./env_attrs')
   , alias = require('./webpack.alias.config')
   , Concat = require('./plugins/concat')
-  , Memfs = require('./plugins/memfs')
-  // , Memfs = require('webpack-memory2fs-plugin')
   , happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });  // 构造一个线程池
 
 const isDev = true

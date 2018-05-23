@@ -2,6 +2,7 @@ var webpack = require('webpack')
 var path = require('path')
   , autoprefix = require('autoprefixer')
   , Memfs = require('webpack-memory2fs-plugin')
+  // , Memfs = require('./plugins/memfs')
 
 const isDev = true
 const DIST = path.join(__dirname, '../dist')
@@ -96,7 +97,13 @@ module.exports = function envConfig(name, param) {
           }),
           // new webpack.NamedModulesPlugin(),
           new webpack.HotModuleReplacementPlugin(),
-          new Memfs()
+          new Memfs({
+            mapfile: {
+              js: /\.js(x?)/,
+              css: ['.css'],
+              html: /\.html/
+            }
+          })
         ])
       }
       return commonPlugins

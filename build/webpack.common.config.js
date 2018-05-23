@@ -3,11 +3,13 @@ var path = require('path')
 var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
   , envAttributs = require('./env_attrs')
 
-
 module.exports = commonConfig = {
   mode: envAttributs('mode'),
   entry: {
-    precommon: ['./src/js/common']
+    precommon: [
+      'babel-polyfill',
+      './src/js/common.js'
+    ]
   },
   devtool: envAttributs('devtool'),
   output: envAttributs('output'),

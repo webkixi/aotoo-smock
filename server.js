@@ -1,34 +1,17 @@
-var WebpackDevServer = require('webpack-dev-server')
-var webpack = require('webpack')
-var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
-var configs = require('./build/webpack.config')
-var path = require('path')
-var fs = require('fs')
+const fs = require('fs')
 const ejs = require('ejs')
+const webpack = require('webpack')
+const WebpackDevServer = require('webpack-dev-server')
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
+const path = require('path')
+const configs = require('./build/webpack.config')
 
-const DIST = path.join(__dirname, 'dist/dev')
+const isDev = true
+const DIST = isDev ? path.join(__dirname, 'dist/dev') : path.join(__dirname, 'dist/pro')
 const DISTHTML = path.join(DIST, 'html')
 const DISTCSS = path.join(DIST, 'css')
 const DISTJS = path.join(DIST, 'js')
-const staticsPath = {
-  imgroot: path.join(__dirname, 'src')
-}
-
-function queryParams (uri) {
-  let [cat, title, id, ...other] = uri.substring(1).split('/')
-  return { cat, title, id, other}
-}
-
-function valideExt (filename) {
-  const exts = ['.html']
-  let accessExt = false
-  const ext = path.extname(filename)
-  if (exts.indexOf(ext) > -1) {
-    accessExt = true
-  }
-  if (!ext) accessExt = true
-  return accessExt
-}
+const DISTIMG = path.join(__dirname, 'src')
 
 const openBrowser = () => {
   return new BrowserSyncPlugin({
@@ -93,11 +76,6 @@ new WebpackDevServer(compiler, {
     version: false,
     warnings: true,
   },
-  watchOptions: {
-    ignored: /\/node_modules\/.*/,
-    aggregateTimeout: 300,
-    poll: 1000
-  },
   host: 'localhost',
   watchContentBase: true,
   // open: true
@@ -105,26 +83,9 @@ new WebpackDevServer(compiler, {
     app.engine('html', ejs.renderFile)
     app.set('view engine', 'html')
     app.set('views', DISTHTML)
-    // app.get(/\/css\/(.*)\.css$/, function (req, res) {
-    //   const staticPath = path.join(DIST, req._parsedUrl._raw)
-    //   if (fs.existsSync(staticPath)) {
-    //     res.sendFile(staticPath)
-    //   } else {
-    //     res.status(404).send('Sorry! file is not exist.')
-    //   }
-    // })
-
-    // app.get(/\/js\/(.*)\.(js|json)$/, function (req, res) {
-    //   const staticPath = path.join(DIST, req._parsedUrl._raw)
-    //   if (fs.existsSync(staticPath)) {
-    //     res.sendFile(staticPath)
-    //   } else {
-    //     res.status(404).send('Sorry! file is not exist.')
-    //   }
-    // })
 
     app.get(/\/img\/(.*)\.(ico|jpg|jpeg|png|gif)$/, function (req, res) {
-      const staticPath = path.join(staticsPath.imgroot, req._parsedUrl._raw)
+      const staticPath = path.join(DISTIMG, req._parsedUrl._raw)
       if (fs.existsSync(staticPath)) {
         res.sendFile(staticPath)
       } else {
@@ -133,7 +94,7 @@ new WebpackDevServer(compiler, {
     })
 
     app.get(/\/images\/(.*)\.(ico|jpg|jpeg|png|gif)$/, function (req, res) {
-      const staticPath = path.join(staticsPath.imgroot, req._parsedUrl._raw)
+      const staticPath = path.join(DISTIMG, req._parsedUrl._raw)
       if (fs.existsSync(staticPath)) {
         res.sendFile(staticPath)
       } else {
@@ -143,6 +104,7 @@ new WebpackDevServer(compiler, {
 
     app.get('/', function(req, res) {
       res.render('index', {
+        bbcc: '123',
         htmlWebpackPlugin: {
           options: {title: 'smock棒棒的'}
         }

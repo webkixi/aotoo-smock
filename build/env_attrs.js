@@ -1,17 +1,11 @@
 var webpack = require('webpack')
 var path = require('path')
-var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
-var HtmlWebpackPlugin = require('html-webpack-plugin'),
-  MiniCssExtractPlugin = require('mini-css-extract-plugin'),
-  HappyPack = require('happypack'),
-  Concat = require('./plugins/concat'),
-  Memfs = require('webpack-memory2fs-plugin'),
-  os = require('os'),
-  happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length }) // 构造一个线程池
+  , autoprefix = require('autoprefixer')
+  , Memfs = require('webpack-memory2fs-plugin')
 
 const isDev = true
 const DIST = path.join(__dirname, '../dist')
-const DEVDIST = path.join(DIST, 'dev')
+const DEVDIST = isDev ? path.join(DIST, 'dev') : path.join(DIST, 'pro')
 const TARGETDIST = isDev ? DEVDIST : DIST
 
 module.exports = function envConfig(name, param) {
@@ -25,9 +19,24 @@ module.exports = function envConfig(name, param) {
 
 
 
+      
+    case 'entries':
+      return isDev ? {
+        index: [
+          'react-hot-loader/patch',
+          'webpack/hot/only-dev-server',
+          'webpack-dev-server/client?https://0.0.0.0:3000',
+        ].concat(param)
+      } : {
+        index: [].concat(param)
+      }
+      break;
+
+
+
 
     case 'watch':
-      return true
+      return false
       break;
 
 
@@ -40,11 +49,12 @@ module.exports = function envConfig(name, param) {
 
 
 
+
+
     case 'output':
       return {
         path: path.join(TARGETDIST),
         filename: 'js/[name].js',
-        // publicPath: '/'
       }
       break;
 

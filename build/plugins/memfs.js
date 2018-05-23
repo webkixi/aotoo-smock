@@ -16,14 +16,14 @@ module.exports = class memeryTofs {
       const assets = stats.compilation.assets
       const compilation = stats.compilation
       const outputPath = opts.outputPath || compilation.compiler.outputPath
-
+      
       _.map(assets, (file, filename) => {
         let directory = path.dirname(file.existsAt)
         let extname   = path.extname(file.existsAt)
         let existsAt  = file.existsAt
         let profile = path.parse(existsAt)
 
-        const willWrite = true
+        let willWrite = true
         if (opts.exclude) {
           if (opts.exclude instanceof RegExp) {
             willWrite = opts.exclude.test(file.existsAt)

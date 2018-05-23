@@ -9,37 +9,37 @@ var HtmlWebpackPlugin = require('html-webpack-plugin')
   , MiniCssExtractPlugin = require('mini-css-extract-plugin')
   , HappyPack = require('happypack')
   , envAttributs = require('./env_attrs')
+  , alias = require('./webpack.alias.config')
   , Concat = require('./plugins/concat')
-  , Memfs = require('webpack-memory2fs-plugin')
+  , Memfs = require('./plugins/memfs')
+  // , Memfs = require('webpack-memory2fs-plugin')
   , happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });  // 构造一个线程池
-
 
 const isDev = true
 const DIST = path.join(__dirname, '../dist')
-const SRC = path.join(__dirname, '../src')
 const DEVDIST = path.join(DIST, 'dev')
+const SRC = path.join(__dirname, '../src')
 const TARGETDIST = isDev ? DEVDIST : DIST
-const entries = {
-  index: [
-    'babel-polyfill',
-    'react-hot-loader/patch',
-    'webpack/hot/only-dev-server',
-    'webpack-dev-server/client?https://0.0.0.0:3000',
-    path.join(SRC, 'js/index.js')
-  ]
-}
 
 del.sync([
-  TARGETDIST+'/css/***', 
-  TARGETDIST+'/html/**', 
-  TARGETDIST+'/js/*', 
-  '!'+(TARGETDIST+'/js/precommon.*'), 
+  TARGETDIST + '/css/***',
+  TARGETDIST + '/html/**',
+  TARGETDIST + '/js/*',
+  TARGETDIST + '/*.hot-update.*',
+  '!' + (TARGETDIST + '/js/precommon.*'),
 ])
+
 
 const normallizeConfig = {
   mode: envAttributs('mode'),
-  entry: entries,
-  // watch: envAttributs('watch'),
+  entry: envAttributs('entries', [path.join(SRC, 'js/index.js')]),
+  watch: envAttributs('watch'),
+  cache: true,
+  watchOptions: {
+    ignored: /\/node_modules\/.*/,
+    aggregateTimeout: 300,
+    poll: 1000
+  },
   devtool: envAttributs('devtool'),
   output: envAttributs('output'),
   optimization: {
@@ -76,23 +76,25 @@ const normallizeConfig = {
       test: /\.html/,  // 配合htmlwebpackplugin
       use: {
         loader: 'html-loader',
-        options: {
-          interpolate: true
-        }
+        options: { interpolate: true }
       }
     }, 
     { 
       test: /\.js(x?)$/,
-      use: [
-        { loader: 'happypack/loader', options: { id: 'babel' } }
-      ],
+      use: [{ 
+        loader: 'happypack/loader', 
+        options: { id: 'babel' } 
+      }],
       exclude: /node_modules/,
     }, 
     { 
       test: /\.stylus/,
       use: envAttributs('stylus', [
         MiniCssExtractPlugin.loader,
-        'css-loader',
+        { loader: 'css-loader',
+          options: { importLoaders: 2 }
+        }, 
+        'postcss-loader',
         'stylus-loader'
       ])
     }, 
@@ -100,12 +102,16 @@ const normallizeConfig = {
       test: /\.styl$/,
       use: envAttributs('styl', [
         'style-loader', 
-        'css-loader', 
+        { loader: 'css-loader',
+          options: { importLoaders: 2 }
+        }, 
+        'postcss-loader',
         'stylus-loader'
       ])
     }]
   },
   resolve: {
+    alias: alias,
     extensions: ['.js', '.styl', '.stylus', '.css', '.jsx', '.json', '.md']
   },
   plugins: envAttributs('plugins', [
@@ -139,10 +145,9 @@ const normallizeConfig = {
   ])
 }
 
-// if (!fs.existsSync(TARGETDIST+'/js/precommon.js')){
-//   console.error(chalk.yellow.bold('common.js文件不存在，请运行 yarn start'));
-//   process.exit()
-// }
-
+if (!fs.existsSync(TARGETDIST+'/js/precommon.js')){
+  console.error(chalk.yellow.bold('common.js文件不存在，请运行 yarn start'));
+  process.exit()
+}
 
 module.exports = normallizeConfig

@@ -7178,8 +7178,8 @@ webpack-log@^1.0.1, webpack-log@^1.1.2:
     uuid "^3.1.0"
 
 webpack-memory2fs-plugin@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/webpack-memory2fs-plugin/-/webpack-memory2fs-plugin-1.0.2.tgz#f2e363f52526569963a19034e269829ce396614d"
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/webpack-memory2fs-plugin/-/webpack-memory2fs-plugin-1.0.3.tgz#0c4ba0fc9a24771e7f222244214d74166336cea2"
 
 webpack-sources@^1.0.1, webpack-sources@^1.1.0:
   version "1.1.0"

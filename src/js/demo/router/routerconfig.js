@@ -12,6 +12,9 @@ import itemUsageLi from './pages/item/usageli'
 import itemUsageDd from './pages/item/usagedd'
 
 import stateComponent from './pages/statecomponent'
+import gridsComponent from "./pages/grids";
+import treexComponent from "./pages/treexdemo";
+import tabsComponent from "./pages/tabs";
 
 const Xxx = props => {
   return (
@@ -64,6 +67,24 @@ let routerData = [
     path: 'stateComponent',
     content: stateComponent,
     attr: { path: 'stateComponent' }
+  },
+  {
+    title: '栅格组件',
+    path: 'gridsComponent',
+    content: gridsComponent,
+    attr: { path: 'gridsComponent' }
+  },
+  {
+    title: 'treex组件',
+    path: 'treexComponent',
+    content: treexComponent,
+    attr: { path: 'treexComponent' }
+  },
+  {
+    title: 'tabs组件',
+    path: 'tabsComponent',
+    content: tabsComponent,
+    attr: { path: 'tabsComponent' }
   },
 ]
 

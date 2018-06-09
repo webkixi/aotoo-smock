@@ -1,5 +1,5 @@
-import $ from 'jquery'
 import 'aotoo-react-router'
+// import '../../aroute'
 
 let _animatecss = {
   fade: {
@@ -28,12 +28,13 @@ const routerData = require('./routerconfig')
 
 const router = Aotoo.router({
   animatecss: _animatecss,
+  likeApp: false,
   props: {
     animate: 'right',
     data: routerData,
     routerClass: 'router-basic',
     showMenu: true,
-    itemMethod: function (dom) {
+    navItemMethod: function (dom) {
       $(dom).off('click').on('click', function (e) {
         e.stopPropagation()
         const _path = $(this).attr('data-path')

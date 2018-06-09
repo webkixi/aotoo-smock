@@ -249,8 +249,8 @@ aotoo-common@^2.1.1:
     jquery "^2.2.4"
 
 aotoo-inject@^1.0.22:
-  version "1.0.29"
-  resolved "https://registry.yarnpkg.com/aotoo-inject/-/aotoo-inject-1.0.29.tgz#770081a8d099edf1482aff5d88c3e96140858f91"
+  version "1.0.31"
+  resolved "https://registry.yarnpkg.com/aotoo-inject/-/aotoo-inject-1.0.31.tgz#32c21dfaba87d3ad8835fba99fca4651c592fa81"
   dependencies:
     blueimp-md5 "^2.7.0"
     fkp-sax "^1.5.19"
@@ -264,29 +264,29 @@ aotoo-mixins-scroll@^1.0.1:
   resolved "https://registry.yarnpkg.com/aotoo-mixins-scroll/-/aotoo-mixins-scroll-1.0.1.tgz#95b5b807ccfae8af75ac7425a6dd9ac5f3a27c12"
 
 aotoo-react-router@^1.0.0:
-  version "1.0.26"
-  resolved "https://registry.yarnpkg.com/aotoo-react-router/-/aotoo-react-router-1.0.26.tgz#1a381e91c45a958875ce0532a67ba93c6f611e35"
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/aotoo-react-router/-/aotoo-react-router-1.0.28.tgz#5c8ee1e89ba25e1ea1ba0ea04a9e07880d14ea24"
   dependencies:
     aotoo-mixins-iscroll "^1.0.4"
     aotoo-react-tabs "^1.0.6"
 
 aotoo-react-tabs@^1.0.5, aotoo-react-tabs@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/aotoo-react-tabs/-/aotoo-react-tabs-1.0.6.tgz#dddcb1c24b277bd5b69acc5876a0bb8849b70510"
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/aotoo-react-tabs/-/aotoo-react-tabs-1.0.11.tgz#098221a83824b34e4251e0302dbf5058bbeda14d"
 
-aotoo-react-treex@^1.0.5:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/aotoo-react-treex/-/aotoo-react-treex-1.0.8.tgz#3077f5e59bceb2df442e06b303e1a29985dbcfe8"
+aotoo-react-treex@^1.0.9:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/aotoo-react-treex/-/aotoo-react-treex-1.0.10.tgz#f102ed83c8b8ee9d9f9736029c5f12c95ca2d95e"
 
 aotoo-web-widgets@^1.2.1:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/aotoo-web-widgets/-/aotoo-web-widgets-1.2.2.tgz#27040ff699d62634d7c3b4b1d0993b6d9c2b3ea2"
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/aotoo-web-widgets/-/aotoo-web-widgets-1.2.11.tgz#bf1a2a6b023e3cee2d87b1d661cbb7a0fcc60e3f"
   dependencies:
     path "^0.12.7"
 
 aotoo@^4.0.1:
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/aotoo/-/aotoo-4.0.6.tgz#faea03d3d46f0145d95732251d30638c785250d2"
+  version "4.0.22"
+  resolved "https://registry.yarnpkg.com/aotoo/-/aotoo-4.0.22.tgz#d0ff0ad7ca5e47472e7a47ef523e87d52a8f0dd6"
   dependencies:
     aotoo-inject "^1.0.22"
     lodash "^4.17.4"
@@ -6977,11 +6977,17 @@ util.promisify@1.0.0:
     define-properties "^1.1.2"
     object.getownpropertydescriptors "^2.0.3"
 
-util@0.10.3, util@^0.10.3:
+util@0.10.3:
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/util/-/util-0.10.3.tgz#7afb1afe50805246489e3db7fe0ed379336ac0f9"
   dependencies:
     inherits "2.0.1"
+
+util@^0.10.3:
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/util/-/util-0.10.4.tgz#3aa0125bfe668a4672de58857d3ace27ecb76901"
+  dependencies:
+    inherits "2.0.3"
 
 utila@~0.3:
   version "0.3.3"

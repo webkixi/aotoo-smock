@@ -5,7 +5,8 @@ const WebpackDevServer = require('webpack-dev-server')
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 const path = require('path')
 const configs = require('./build/webpack.config')
-
+const React = require('react')
+const ReactDomServer = require('react-dom/server')
 const isDev = true
 const DIST = isDev ? path.join(__dirname, 'dist/dev') : path.join(__dirname, 'dist/pro')
 const DISTHTML = path.join(DIST, 'html')
@@ -103,8 +104,10 @@ new WebpackDevServer(compiler, {
     })
 
     app.get('/', function(req, res) {
+      const testJsx = require('./server/index')()
       res.render('index', {
-        bbcc: '123',
+        // bbcc: ReactDomServer.renderToString(<div>aabbb</div>),
+        bbcc: ReactDomServer.renderToString(testJsx),
         htmlWebpackPlugin: {
           options: {title: 'smock棒棒的'}
         }

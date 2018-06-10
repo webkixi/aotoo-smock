@@ -27,7 +27,6 @@ del.sync([
   '!' + (TARGETDIST + '/js/precommon.*'),
 ])
 
-
 const normallizeConfig = {
   mode: envAttributs('mode'),
   entry: envAttributs('entries', [path.join(SRC, 'js/index.js')]),
@@ -88,7 +87,7 @@ const normallizeConfig = {
     { 
       test: /\.stylus/,
       use: envAttributs('stylus', [
-        MiniCssExtractPlugin.loader,
+        'style-loader',
         { loader: 'css-loader',
           options: { importLoaders: 2 }
         }, 
@@ -99,7 +98,7 @@ const normallizeConfig = {
     { 
       test: /\.styl$/,
       use: envAttributs('styl', [
-        'style-loader', 
+        MiniCssExtractPlugin.loader,
         { loader: 'css-loader',
           options: { importLoaders: 2 }
         }, 
@@ -135,7 +134,7 @@ const normallizeConfig = {
     new HtmlWebpackPlugin({
       alwaysWriteToDisk: true,
       title: 'Custom template',
-      template: 'src/assets/html/my-index.html', // Load a custom template 
+      template: 'src/html/my-index.html', // Load a custom template 
       inject: 'body', // Inject all scripts into the body 
       chunks: ['common', 'index'],
       filename: 'html/index.html',

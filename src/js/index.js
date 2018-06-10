@@ -1,7 +1,7 @@
 /**
  * 引入样式
  */
-import 'css/index.stylus'
+import 'css/index.styl'
 
 /**
  * 引入js

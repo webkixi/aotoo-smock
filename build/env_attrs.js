@@ -64,11 +64,11 @@ module.exports = function envConfig(name, param) {
 
 
     case 'stylus': // stylus loader
-      const cssLoaders = param
+      const cssInlineLoaders = param
       if (isDev) {
-        cssLoaders.unshift('css-hot-loader')
+        cssInlineLoaders.unshift('css-hot-loader')
       }
-      return cssLoaders
+      return cssInlineLoaders
       break;
 
 
@@ -76,11 +76,11 @@ module.exports = function envConfig(name, param) {
 
 
     case 'styl': // styl loader
-      const cssInlineLoaders = param
+      const cssLoaders = param
       if (isDev) {
-        cssInlineLoaders.unshift('css-hot-loader')
+        cssLoaders.unshift('css-hot-loader')
       }
-      return cssInlineLoaders
+      return cssLoaders
       break;
 
 

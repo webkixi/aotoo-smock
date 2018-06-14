@@ -1,20 +1,20 @@
-import leaveDemoPage from './pages/leave'
-import mywrap from './pages/wrap'
+import leaveDemoPage from '../_pages/leave'
+import mywrap from '../_pages/wrap'
 
-import itemUsage from './pages/item/usage'
-import itemUsageJsx from './pages/item/usagejsx'
-import itemUsageLink from './pages/item/usagelink'
-import itemUsageImg from './pages/item/usageimg'
-import itemUsageImgs from './pages/item/usageimgs'
-import itemUsageImgsh from './pages/item/usageimgsh'
-import itemUsageAttr from './pages/item/usageattr'
-import itemUsageLi from './pages/item/usageli'
-import itemUsageDd from './pages/item/usagedd'
+import itemUsage from '../_pages/item/usage'
+import itemUsageJsx from '../_pages/item/usagejsx'
+import itemUsageLink from '../_pages/item/usagelink'
+import itemUsageImg from '../_pages/item/usageimg'
+import itemUsageImgs from '../_pages/item/usageimgs'
+import itemUsageImgsh from '../_pages/item/usageimgsh'
+import itemUsageAttr from '../_pages/item/usageattr'
+import itemUsageLi from '../_pages/item/usageli'
+import itemUsageDd from '../_pages/item/usagedd'
 
-import stateComponent from './pages/statecomponent'
-import gridsComponent from "./pages/grids";
-import treexComponent from "./pages/treexdemo";
-import tabsComponent from "./pages/tabs";
+import stateComponent from '../_pages/statecomponent'
+import gridsComponent from "../_pages/grids";
+import treexComponent from "../_pages/treexdemo";
+import tabsComponent from "../_pages/tabs";
 
 const Xxx = props => {
   return (

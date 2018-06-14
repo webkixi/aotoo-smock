@@ -1,5 +1,4 @@
 import 'aotoo-react-router'
-// import '../../aroute'
 
 let _animatecss = {
   fade: {
@@ -24,7 +23,7 @@ let _animatecss = {
   }
 }
 
-const routerData = require('./routerconfig')
+const routerData = require('./_common/routerconfig')
 
 const router = Aotoo.router({
   animatecss: _animatecss,

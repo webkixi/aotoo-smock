@@ -1,5 +1,4 @@
 import treex from 'aotoo-react-treex'
-// import treex from '../../../atree'
 
 function getInput(val) {
   if (val) {

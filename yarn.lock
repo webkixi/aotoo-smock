@@ -271,22 +271,22 @@ aotoo-react-router@^1.0.0:
     aotoo-react-tabs "^1.0.6"
 
 aotoo-react-tabs@^1.0.5, aotoo-react-tabs@^1.0.6:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/aotoo-react-tabs/-/aotoo-react-tabs-1.0.11.tgz#098221a83824b34e4251e0302dbf5058bbeda14d"
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/aotoo-react-tabs/-/aotoo-react-tabs-1.0.12.tgz#35b8b2b74cd798b02abfae60229db53c286fbd3b"
 
 aotoo-react-treex@^1.0.9:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/aotoo-react-treex/-/aotoo-react-treex-1.0.10.tgz#f102ed83c8b8ee9d9f9736029c5f12c95ca2d95e"
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/aotoo-react-treex/-/aotoo-react-treex-1.0.13.tgz#1e287052cfdbd546ba3d17273161231db4a912f2"
 
 aotoo-web-widgets@^1.2.1:
-  version "1.2.11"
-  resolved "https://registry.yarnpkg.com/aotoo-web-widgets/-/aotoo-web-widgets-1.2.11.tgz#bf1a2a6b023e3cee2d87b1d661cbb7a0fcc60e3f"
+  version "1.2.13"
+  resolved "https://registry.yarnpkg.com/aotoo-web-widgets/-/aotoo-web-widgets-1.2.13.tgz#d2e87a6b3e70297bc05b4a02abfa27829586054d"
   dependencies:
     path "^0.12.7"
 
 aotoo@^4.0.1:
-  version "4.0.27"
-  resolved "https://registry.yarnpkg.com/aotoo/-/aotoo-4.0.27.tgz#3523af47847bf157cc2202cade4f92a2d5baa50d"
+  version "4.0.28"
+  resolved "https://registry.yarnpkg.com/aotoo/-/aotoo-4.0.28.tgz#370936cf7467f1482c8a0edc013d8ef2da0edf75"
   dependencies:
     aotoo-inject "^1.0.22"
     lodash "^4.17.4"

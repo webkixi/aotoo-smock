@@ -1,15 +1,30 @@
 var webpack = require('webpack')
+var _ = require('lodash')
 var path = require('path')
   , autoprefix = require('autoprefixer')
   , Memfs = require('webpack-memory2fs-plugin')
+  , HtmlWebpackPlugin = require('html-webpack-plugin')
+  , getEntryTrunks = require('./util/entry');
+  
   // , Memfs = require('./plugins/memfs')
+
+  
+
+
+function getTrunks(src, opts) {
+  let dfts = {
+    type: 'js',
+  }
+  dfts = _.merge(dfts, opts)
+  return getEntryTrunks(src, dfts)
+}
 
 const isDev = true
 const DIST = path.join(__dirname, '../dist')
 const DEVDIST = isDev ? path.join(DIST, 'dev') : path.join(DIST, 'pro')
 const TARGETDIST = isDev ? DEVDIST : DIST
 
-module.exports = function envConfig(name, param) {
+module.exports = function envConfig(name, param, param1) {
 
   const isDev = true
 
@@ -22,15 +37,18 @@ module.exports = function envConfig(name, param) {
 
       
     case 'entries':
-      return isDev ? {
-        index: [
-          'react-hot-loader/patch',
-          'webpack/hot/only-dev-server',
-          'webpack-dev-server/client?https://0.0.0.0:3000',
-        ].concat(param)
-      } : {
-        index: [].concat(param)
-      }
+      let trunks = getTrunks(param, param1)
+      Object.keys(trunks).forEach((trunkName, ii) => {
+        let val = trunks[trunkName]
+        if (isDev) {
+          trunks[trunkName] = [
+            'react-hot-loader/patch',
+            'webpack/hot/only-dev-server',
+            'webpack-dev-server/client?https://0.0.0.0:3000',
+          ].concat(val)
+        }
+      })
+      return trunks
       break;
 
 

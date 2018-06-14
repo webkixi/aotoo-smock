@@ -29,7 +29,7 @@ del.sync([
 
 const normallizeConfig = {
   mode: envAttributs('mode'),
-  entry: envAttributs('entries', [path.join(SRC, 'js/index.js')]),
+  entry: envAttributs('entries', path.join(SRC, 'js'), {exclude: ['common']}),
   watch: envAttributs('watch'),
   cache: true,
   watchOptions: {
@@ -134,7 +134,7 @@ const normallizeConfig = {
     new HtmlWebpackPlugin({
       alwaysWriteToDisk: true,
       title: 'Custom template',
-      template: 'src/html/my-index.html', // Load a custom template 
+      template: 'src/html/index.html', // Load a custom template 
       inject: 'body', // Inject all scripts into the body 
       chunks: ['common', 'index'],
       filename: 'html/index.html',

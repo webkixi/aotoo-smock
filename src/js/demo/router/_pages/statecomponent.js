@@ -1,5 +1,3 @@
-import $ from 'jquery'
-
 const HelloWrap = (props) => {
   const router = props.inst
   const We = Aotoo.wrap(

@@ -8,7 +8,7 @@ module.exports = commonConfig = {
   entry: {
     precommon: [
       'babel-polyfill',
-      './src/js/common.js'
+      './src/js/common'
     ]
   },
   devtool: envAttributs('devtool'),
